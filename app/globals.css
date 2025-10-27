@@ -1,26 +1,49 @@
+@import url("https://fonts.googleapis.com/css2?family=Courgette&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Courgette&family=Tenor+Sans&display=swap");
 @import "tailwindcss";
+@theme {
+  --color-background: var(--background);
+  --color-border: var(--border);
+  --color-text: var(--text);
+  --font-tenor: "Tenor Sans", sans-serif;
+  --font-courgette: "Courgette", cursive;
+  --color-bdy: var(--textbdy);
+  --color-prime: var(--textprime);
+  --color-bdrl: var(--borderlight);
+  --color-drkmd: var(--darkmodeclr);
+  --color-backgroundmbl: var(--mobile);
+  --color-box: var(--box);
+}
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #faf9f8;
+  --text: #1e3706;
+  --textbdy: #000000;
+  --textprime: #b1aeaeff;
+  --border: #3f3f46;
+  --borderlight: #3e6b2b;
+  --darkmodeclr: black;
+  --mobile: #dddcda;
+  --box: #dddcda91;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.dark {
+  --background: #0e0e10;
+  --text: #7ed957;
+  --textbdy: white;
+  --textprime: #676a67;
+  --border: #3f3f46;
+  --borderlight: #3e6b2b;
+  --darkmodeclr: white;
+  --mobile: #53504a;
+  --box: #18181b;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Disable transitions until theme applied */
+* {
+  transition: none !important;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+html[data-theme-loaded="true"] * {
+  transition: background-color 0.3s ease, color 0.3s ease !important;
 }

@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import ThemeScript from "./theme-script";
+import TopBar from "@/components/topBar"; // ✅ make sure your navbar is in components/TopBar.tsx
+import Footer from "@/components/Footer";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
@@ -19,15 +18,39 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
+      <head>
+        {/* 🧠 Instant theme loader to prevent white flash */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  const savedTheme = localStorage.getItem('theme');
+                  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                  document.documentElement.dataset.themeLoaded = "true";
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
+
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-text`}
       >
-        {children}
+        <TopBar /> {/* ✅ NavBar appears on every page */}
+        <main className="pt-20">{children}</main> <Footer />
+        {/* adds top padding below navbar */}
       </body>
     </html>
   );
