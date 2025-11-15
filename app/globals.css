@@ -13,6 +13,7 @@
   --color-drkmd: var(--darkmodeclr);
   --color-backgroundmbl: var(--mobile);
   --color-box: var(--box);
+  --color-tab: var(--tabs);
 }
 
 :root {
@@ -25,6 +26,7 @@
   --darkmodeclr: black;
   --mobile: #dddcda;
   --box: #dddcda91;
+  --tabs: #0f8162;
 }
 
 .dark {
@@ -37,6 +39,7 @@
   --darkmodeclr: white;
   --mobile: #53504a;
   --box: #18181b;
+  --tabs: #53d71b;
 }
 
 /* Disable transitions until theme applied */
@@ -46,4 +49,13 @@
 
 html[data-theme-loaded="true"] * {
   transition: background-color 0.3s ease, color 0.3s ease !important;
+}
+
+/* Hide scrollbar but keep scroll functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none; /* Firefox */
 }

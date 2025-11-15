@@ -13,7 +13,7 @@ export const HERO_DESCRIPTION =
   "Your all-in-one resource for syllabus, important questions, video collections, and much more.";
 
 export const HERO_BRANCHES = ["CSAM", "CYBER"];
-export const HERO_BRANCH_HEADING = "SELECT YOUR BRANCH";
+export const HERO_BRANCH_HEADING = "SELECT YOUR BRANCH AND SEM";
 export const HERO_SEMS = ["1", "3"];
 // ✅ Date Sheet Data
 export const DATESHEET_DATA = [
@@ -28,11 +28,11 @@ export const DATESHEET_DATA = [
       { subject: "Communication Skills", date: "2025-12-27" },
     ],
     sem3: [
-      { subject: "Computational Methods", date: "2025-12-16" },
-      { subject: "Discrete Mathematics", date: "2025-12-18" },
-      { subject: "Digital Logic & Computer Design", date: "2025-12-20" },
-      { subject: "Data Structures", date: "2025-12-23" },
-      { subject: "Linear Algebra & Calculus", date: "2025-12-26" },
+      { subject: "Computational Methods", date: "2025-12-17" },
+      { subject: "Discrete Mathematics", date: "2025-12-19" },
+      { subject: "Digital Logic & Computer Design", date: "2025-12-21" },
+      { subject: "Data Structures", date: "2025-12-24" },
+      { subject: "Linear Algebra & Calculus", date: "2025-12-27" },
     ],
   },
   {
@@ -46,11 +46,11 @@ export const DATESHEET_DATA = [
       { subject: "Communication Skills", date: "2025-12-27" },
     ],
     sem3: [
-      { subject: "Computational Methods", date: "2025-12-16" },
-      { subject: "Discrete Mathematics", date: "2025-12-18" },
-      { subject: "Digital Logic & Computer Design", date: "2025-12-20" },
-      { subject: "Data Structures", date: "2025-12-23" },
-      { subject: "Object Oriented Programming in C", date: "2025-12-26" },
+      { subject: "Computational Methods", date: "2025-12-17" },
+      { subject: "Discrete Mathematics", date: "2025-12-19" },
+      { subject: "Digital Logic & Computer Design", date: "2025-12-21" },
+      { subject: "Data Structures", date: "2025-12-24" },
+      { subject: "Object Oriented Programming in C", date: "2025-12-27" },
     ],
   },
 ];

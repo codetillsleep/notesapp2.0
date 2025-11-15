@@ -32,6 +32,26 @@ export default function SubjectPage() {
     loadSubjects();
   }, []);
 
+  // Helper function to get thumbnail from any YouTube URL
+  const getYoutubeThumbnail = (url: string) => {
+    try {
+      const videoIdMatch = url.match(/(?:v=|youtu\.be\/)([^&]+)/);
+      const playlistIdMatch = url.match(/list=([^&]+)/);
+
+      if (videoIdMatch) {
+        // Regular YouTube video thumbnail
+        return `https://img.youtube.com/vi/${videoIdMatch[1]}/hqdefault.jpg`;
+      }
+
+      if (playlistIdMatch) {
+        // Playlist thumbnail (YouTube uses this format)
+        return `https://i.ytimg.com/vi/${playlistIdMatch[1]}/hqdefault.jpg`;
+      }
+    } catch (e) {}
+
+    return null; // not YouTube
+  };
+
   // ✅ Apply saved selection
   const applySelection = () => {
     const branch = localStorage.getItem("selectedBranch");
@@ -144,21 +164,36 @@ export default function SubjectPage() {
                 <h2 className="text-lg font-semibold text-textbdy mb-4">
                   Subject Details
                 </h2>
+
                 <div className="flex flex-col gap-3 text-sm">
-                  {[
-                    ["Theory Code", selectedSubject.code],
-                    ["Theory Credits", selectedSubject.theoryCredits],
-                    ["Lab Code", selectedSubject.labCode || "N/A"],
-                    ["Lab Credits", selectedSubject.labCredits || "N/A"],
-                  ].map(([label, value]) => (
-                    <div
-                      key={label}
-                      className="flex justify-between border border-[#3f3f46] rounded-md px-3 py-2"
-                    >
-                      <span>{label}</span>
-                      <span>{value}</span>
-                    </div>
-                  ))}
+                  {/* Always show */}
+                  <div className="flex justify-between border border-[#3f3f46] rounded-md px-3 py-2">
+                    <span>Theory Code</span>
+                    <span>{selectedSubject.code}</span>
+                  </div>
+
+                  <div className="flex justify-between border border-[#3f3f46] rounded-md px-3 py-2">
+                    <span>Theory Credits</span>
+                    <span>{selectedSubject.theoryCredits}</span>
+                  </div>
+
+                  {/* Only show Lab Code if not empty AND not 0 */}
+                  {selectedSubject.labCode &&
+                    selectedSubject.labCode !== "0" && (
+                      <div className="flex justify-between border border-[#3f3f46] rounded-md px-3 py-2">
+                        <span>Lab Code</span>
+                        <span>{selectedSubject.labCode}</span>
+                      </div>
+                    )}
+
+                  {/* Only show Lab Credits if not null AND not 0 */}
+                  {selectedSubject.labCredits != null &&
+                    selectedSubject.labCredits !== 0 && (
+                      <div className="flex justify-between border border-[#3f3f46] rounded-md px-3 py-2">
+                        <span>Lab Credits</span>
+                        <span>{selectedSubject.labCredits}</span>
+                      </div>
+                    )}
                 </div>
               </div>
             )}
@@ -167,8 +202,11 @@ export default function SubjectPage() {
           {/* RIGHT PANEL */}
           <div className="flex-1 flex flex-col gap-6">
             {/* ✅ Subject Scroll Bar */}
-            <div className="border-y-2 rounded-lg border-[#3f3f46] bg-transparent px-4 py-3 overflow-x-auto scrollbar-thin scrollbar-thumb-[#3f3f46] scrollbar-track-transparent">
-              <div className="flex gap-3 w-max">
+            <div
+              className="border-y-2 rounded-lg border-[#3f3f46] bg-transparent px-4 py-4 
+                overflow-x-auto no-scrollbar"
+            >
+              <div className="flex gap-3  ">
                 {filteredSubjects.map((subj) => (
                   <button
                     key={subj._id}
@@ -191,14 +229,14 @@ export default function SubjectPage() {
 
             {/* Tabs & Content */}
             {selectedSubject && (
-              <div className="rounded-xl p-6 flex flex-col gap-6 border border-[#3f3f46]">
+              <div className="rounded-xl  p-3 flex flex-col gap-6 border border-[#3f3f46]">
                 <h1 className="text-2xl sm:text-3xl font-bold text-bdr text-center tracking-wide">
                   {capitalize(selectedSubject.name)}
                 </h1>
 
                 {/* ✅ Tab Scroll Bar */}
-                <div className="border-2 border-[#3f3f46] rounded-xl bg-transparent p-2 overflow-x-auto scrollbar-thin scrollbar-thumb-[#3f3f46] scrollbar-track-transparent">
-                  <div className="flex gap-3 w-max  font-semibold text-sm sm:text-base">
+                <div className="border-2 border-[#3f3f46] rounded-xl bg-transparent p-2 overflow-x-auto scrollbar-thin scrollbar-thumb-[#3f3f46] scrollbar-track-transparent  justify-center items-center md:flex">
+                  <div className="flex gap-3  w-max  font-semibold text-sm sm:text-base">
                     {["syllabus", "lab", "questions", "videos"].map((tab) => (
                       <button
                         key={tab}
@@ -217,7 +255,7 @@ export default function SubjectPage() {
 
                 {/* Tab Content */}
                 {activeTab === "syllabus" && (
-                  <div className="flex flex-col gap-3 p-4 rounded-xl border-prime">
+                  <div className="flex flex-col gap-3  rounded-xl border-prime">
                     {Object.entries(selectedSubject.syllabus || {}).map(
                       ([unit, content], idx) => (
                         <div
@@ -228,7 +266,7 @@ export default function SubjectPage() {
                             onClick={() => toggleUnit(idx)}
                             className="flex justify-between items-center w-full px-5 py-3 text-left text-base font-semibold text-textbdy"
                           >
-                            <span>{capitalize(unit)}</span>
+                            <span>{unit}</span>
                             <ChevronDown
                               className={`w-4 h-4 text-textbdy transition-transform ${
                                 openUnits.includes(idx) ? "rotate-180" : ""
@@ -263,16 +301,16 @@ export default function SubjectPage() {
                 )}
 
                 {activeTab === "questions" && (
-                  <div className="text-sm text-textbdy space-y-2">
+                  <div className="text-sm text-textbdy  space-y-2">
                     {selectedSubject.questions?.length ? (
                       selectedSubject.questions.map((q: any) => (
                         <a
                           key={q._id || q.title}
                           href={q.pdfUrl}
                           target="_blank"
-                          className="block border border-[#3f3f46] rounded-md px-4 py-2 hover:border-[#ff007f] transition"
+                          className="block border border-[#3f3f46] rounded-md px-6 py-6  hover:border-[#025913]  font-semibold   "
                         >
-                          📘 {capitalize(q.title)}
+                          {q.title}
                         </a>
                       ))
                     ) : (
@@ -282,18 +320,41 @@ export default function SubjectPage() {
                 )}
 
                 {activeTab === "videos" && (
-                  <div className="text-sm text-[#d1d5db] space-y-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm text-bdy">
                     {selectedSubject.videos?.length ? (
-                      selectedSubject.videos.map((v: any) => (
-                        <a
-                          key={v._id || v.title}
-                          href={v.url}
-                          target="_blank"
-                          className="block border border-[#3f3f46] rounded-md px-4 py-2 hover:border-[#ff007f] transition"
-                        >
-                          🎥 {capitalize(v.title)}
-                        </a>
-                      ))
+                      selectedSubject.videos.map((v: any) => {
+                        const thumb = getYoutubeThumbnail(v.url);
+
+                        return (
+                          <a
+                            key={v._id || v.title}
+                            href={v.url}
+                            target="_blank"
+                            className="border border-[#3f3f46] rounded-md p-2 hover:border-tab transition block"
+                          >
+                            {/* Thumbnail */}
+                            {thumb ? (
+                              <img
+                                src={thumb}
+                                alt={v.title}
+                                className="w-full h-40 object-cover rounded"
+                              />
+                            ) : (
+                              // Fallback thumbnail for non-YouTube URLs
+                              <div className="w-full h-40 bg-gray-800 flex items-center justify-center rounded">
+                                <span className="text-gray-400 text-xs">
+                                  No Thumbnail
+                                </span>
+                              </div>
+                            )}
+
+                            {/* Title */}
+                            <p className="mt-2 font-semibold text-center">
+                              {capitalize(v.title)}
+                            </p>
+                          </a>
+                        );
+                      })
                     ) : (
                       <p>No videos added yet.</p>
                     )}

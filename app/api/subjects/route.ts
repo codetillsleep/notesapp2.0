@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/dbConnect";
 import { Subject } from "@/models/Subject";
 
+// 🟩 GET — fetch all subjects
 export async function GET() {
   try {
     console.log("🔹 Connecting to DB...");
@@ -19,53 +20,71 @@ export async function GET() {
   }
 }
 
+// 🟦 POST — add a new subject
 export async function POST(request: Request) {
   try {
     await connectDB();
     const body = await request.json();
 
-    const {
-      name,
-      code,
-      labCode,
-      branch,
-      semester,
-      theoryCredits,
-      labCredits,
-      syllabus,
-      lab,
-      questions,
-      videos,
-    } = body;
+    // Check if the input is a single subject or array
+    const subjects = Array.isArray(body) ? body : [body];
 
-    if (!name || !code || !branch || !semester)
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
+    // Validate all required fields
+    for (const subj of subjects) {
+      if (!subj.name || !subj.code || !subj.branch || !subj.semester) {
+        return NextResponse.json(
+          { error: "Each subject must have name, code, branch, and semester" },
+          { status: 400 }
+        );
+      }
+    }
 
-    const newSubject = await Subject.create({
-      name,
-      code,
-      labCode,
-      branch,
-      semester,
-      theoryCredits,
-      labCredits,
-      syllabus,
-      lab,
-      questions,
-      videos,
-    });
+    // Insert many at once
+    const newSubjects = await Subject.insertMany(subjects);
 
     return NextResponse.json(
-      { success: true, data: newSubject },
+      { success: true, count: newSubjects.length, data: newSubjects },
       { status: 201 }
     );
   } catch (error: any) {
-    console.error("Error adding subject:", error);
+    console.error("Error adding subjects:", error);
     return NextResponse.json(
-      { error: "Failed to add subject" },
+      { error: "Failed to add subjects" },
+      { status: 500 }
+    );
+  }
+}
+
+// 🟨 PATCH — update an existing subject
+export async function PATCH(request: Request) {
+  try {
+    await connectDB();
+
+    const url = new URL(request.url);
+    const code = url.searchParams.get("code"); // you’ll pass ?code=ES-201
+    const update = await request.json();
+
+    if (!code)
+      return NextResponse.json(
+        { success: false, message: "Subject code is required" },
+        { status: 400 }
+      );
+
+    const updated = await Subject.findOneAndUpdate({ code }, update, {
+      new: true,
+    });
+
+    if (!updated)
+      return NextResponse.json(
+        { success: false, message: "Subject not found" },
+        { status: 404 }
+      );
+
+    return NextResponse.json({ success: true, data: updated }, { status: 200 });
+  } catch (error: any) {
+    console.error("Error updating subject:", error);
+    return NextResponse.json(
+      { success: false, message: error.message || "Update failed" },
       { status: 500 }
     );
   }
