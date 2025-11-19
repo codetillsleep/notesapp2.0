@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { ChevronDown } from "lucide-react";
 import Loader from "@/components/Loader";
 
@@ -12,10 +12,41 @@ export default function SubjectPage() {
   const [selectedSubject, setSelectedSubject] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // ➤ Drag Scroll Ref
+  const dragScrollRef = useRef<any>(null);
+  let isDown = false;
+  let startX: number;
+  let scrollLeft: number;
+
+  const handleMouseDown = (e: any) => {
+    isDown = true;
+    dragScrollRef.current.classList.add("cursor-grabbing");
+    startX = e.pageX - dragScrollRef.current.offsetLeft;
+    scrollLeft = dragScrollRef.current.scrollLeft;
+  };
+
+  const handleMouseLeave = () => {
+    isDown = false;
+    dragScrollRef.current.classList.remove("cursor-grabbing");
+  };
+
+  const handleMouseUp = () => {
+    isDown = false;
+    dragScrollRef.current.classList.remove("cursor-grabbing");
+  };
+
+  const handleMouseMove = (e: any) => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - dragScrollRef.current.offsetLeft;
+    const walk = (x - startX) * 2; // speed
+    dragScrollRef.current.scrollLeft = scrollLeft - walk;
+  };
+
   const capitalize = (str: string) =>
     str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : "";
 
-  // ✅ Load subjects
+  // Load subjects
   useEffect(() => {
     const loadSubjects = async () => {
       try {
@@ -32,27 +63,24 @@ export default function SubjectPage() {
     loadSubjects();
   }, []);
 
-  // Helper function to get thumbnail from any YouTube URL
+  // YouTube thumbnail helper
   const getYoutubeThumbnail = (url: string) => {
     try {
       const videoIdMatch = url.match(/(?:v=|youtu\.be\/)([^&]+)/);
       const playlistIdMatch = url.match(/list=([^&]+)/);
 
       if (videoIdMatch) {
-        // Regular YouTube video thumbnail
         return `https://img.youtube.com/vi/${videoIdMatch[1]}/hqdefault.jpg`;
       }
 
       if (playlistIdMatch) {
-        // Playlist thumbnail (YouTube uses this format)
         return `https://i.ytimg.com/vi/${playlistIdMatch[1]}/hqdefault.jpg`;
       }
     } catch (e) {}
-
-    return null; // not YouTube
+    return null;
   };
 
-  // ✅ Apply saved selection
+  // Apply saved filters
   const applySelection = () => {
     const branch = localStorage.getItem("selectedBranch");
     const sem = localStorage.getItem("selectedSem");
@@ -76,7 +104,7 @@ export default function SubjectPage() {
     if (subjects.length > 0) applySelection();
   }, [subjects]);
 
-  // ✅ Listen for updates from TopBar
+  // Sync updates
   useEffect(() => {
     const handleSelectionChange = () => applySelection();
     window.addEventListener("subject-selection", handleSelectionChange);
@@ -166,7 +194,6 @@ export default function SubjectPage() {
                 </h2>
 
                 <div className="flex flex-col gap-3 text-sm">
-                  {/* Always show */}
                   <div className="flex justify-between border border-[#3f3f46] rounded-md px-3 py-2">
                     <span>Theory Code</span>
                     <span>{selectedSubject.code}</span>
@@ -177,7 +204,6 @@ export default function SubjectPage() {
                     <span>{selectedSubject.theoryCredits}</span>
                   </div>
 
-                  {/* Only show Lab Code if not empty AND not 0 */}
                   {selectedSubject.labCode &&
                     selectedSubject.labCode !== "0" && (
                       <div className="flex justify-between border border-[#3f3f46] rounded-md px-3 py-2">
@@ -186,7 +212,6 @@ export default function SubjectPage() {
                       </div>
                     )}
 
-                  {/* Only show Lab Credits if not null AND not 0 */}
                   {selectedSubject.labCredits != null &&
                     selectedSubject.labCredits !== 0 && (
                       <div className="flex justify-between border border-[#3f3f46] rounded-md px-3 py-2">
@@ -201,12 +226,17 @@ export default function SubjectPage() {
 
           {/* RIGHT PANEL */}
           <div className="flex-1 flex flex-col gap-6">
-            {/* ✅ Subject Scroll Bar */}
+            {/* ★★★ SUBJECT SCROLL BAR WITH DRAG ★★★ */}
             <div
+              ref={dragScrollRef}
+              onMouseDown={handleMouseDown}
+              onMouseLeave={handleMouseLeave}
+              onMouseUp={handleMouseUp}
+              onMouseMove={handleMouseMove}
               className="border-y-2 rounded-lg border-[#3f3f46] bg-transparent px-4 py-4 
-                overflow-x-auto no-scrollbar"
+                overflow-x-auto no-scrollbar cursor-grab select-none"
             >
-              <div className="flex gap-3  ">
+              <div className="flex gap-3 flex-nowrap ">
                 {filteredSubjects.map((subj) => (
                   <button
                     key={subj._id}
@@ -217,8 +247,8 @@ export default function SubjectPage() {
                     }}
                     className={`shrink-0 px-6 py-2 rounded-xl text-sm font-semibold transition ${
                       selectedSubject?._id === subj._id
-                        ? "bg-[#7ed957]  text-black"
-                        : " text-textbdy hover:cursor-pointer"
+                        ? "bg-[#7ed957] text-black"
+                        : "text-textbdy hover:cursor-pointer"
                     }`}
                   >
                     {capitalize(subj.name)}
@@ -229,21 +259,21 @@ export default function SubjectPage() {
 
             {/* Tabs & Content */}
             {selectedSubject && (
-              <div className="rounded-xl  p-3 flex flex-col gap-6 border border-[#3f3f46]">
+              <div className="rounded-xl p-3 flex flex-col gap-6 border border-[#3f3f46]">
                 <h1 className="text-2xl sm:text-3xl font-bold text-bdr text-center tracking-wide">
                   {capitalize(selectedSubject.name)}
                 </h1>
 
-                {/* ✅ Tab Scroll Bar */}
-                <div className="border-2 border-[#3f3f46] rounded-xl bg-transparent p-2 overflow-x-auto scrollbar-thin scrollbar-thumb-[#3f3f46] scrollbar-track-transparent  justify-center items-center md:flex">
-                  <div className="flex gap-3  w-max  font-semibold text-sm sm:text-base">
+                {/* Tabs */}
+                <div className="border-2 border-[#3f3f46] rounded-xl bg-transparent p-2 overflow-x-auto scrollbar-thin scrollbar-thumb-[#3f3f46] scrollbar-track-transparent md:flex justify-center items-center">
+                  <div className="flex gap-3 w-max font-semibold text-sm sm:text-base">
                     {["syllabus", "lab", "questions", "videos"].map((tab) => (
                       <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
                         className={`shrink-0 px-12 py-2 rounded-xl transition-all duration-200 ${
                           activeTab === tab
-                            ? "bg-[#7ed957]  text-black"
+                            ? "bg-[#7ed957] text-black"
                             : "text-textbdy hover:cursor-pointer"
                         }`}
                       >
@@ -255,7 +285,7 @@ export default function SubjectPage() {
 
                 {/* Tab Content */}
                 {activeTab === "syllabus" && (
-                  <div className="flex flex-col gap-3  rounded-xl border-prime">
+                  <div className="flex flex-col gap-3 rounded-xl border-prime">
                     {Object.entries(selectedSubject.syllabus || {}).map(
                       ([unit, content], idx) => (
                         <div
@@ -301,14 +331,14 @@ export default function SubjectPage() {
                 )}
 
                 {activeTab === "questions" && (
-                  <div className="text-sm text-textbdy  space-y-2">
+                  <div className="text-sm text-textbdy space-y-2">
                     {selectedSubject.questions?.length ? (
                       selectedSubject.questions.map((q: any) => (
                         <a
                           key={q._id || q.title}
                           href={q.pdfUrl}
                           target="_blank"
-                          className="block border border-[#3f3f46] rounded-md px-6 py-6  hover:border-[#025913]  font-semibold   "
+                          className="block border border-[#3f3f46] rounded-md px-6 py-6 hover:border-[#025913] font-semibold"
                         >
                           {q.title}
                         </a>
@@ -332,7 +362,6 @@ export default function SubjectPage() {
                             target="_blank"
                             className="border border-[#3f3f46] rounded-md p-2 hover:border-tab transition block"
                           >
-                            {/* Thumbnail */}
                             {thumb ? (
                               <img
                                 src={thumb}
@@ -340,15 +369,12 @@ export default function SubjectPage() {
                                 className="w-full h-40 object-cover rounded"
                               />
                             ) : (
-                              // Fallback thumbnail for non-YouTube URLs
                               <div className="w-full h-40 bg-gray-800 flex items-center justify-center rounded">
                                 <span className="text-gray-400 text-xs">
                                   No Thumbnail
                                 </span>
                               </div>
                             )}
-
-                            {/* Title */}
                             <p className="mt-2 font-semibold text-center">
                               {capitalize(v.title)}
                             </p>
