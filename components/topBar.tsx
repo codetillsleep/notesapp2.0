@@ -63,7 +63,8 @@ const TopBar = () => {
 
     setSuggestions(matches);
   }, [searchQuery, subjects]);
-
+  const capitalize = (str: string) =>
+    str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : "";
   const handleSelectSubject = async (subject: any) => {
     const selectedBranch =
       Array.isArray(subject.branch) && subject.branch.length > 0
@@ -116,7 +117,7 @@ const TopBar = () => {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="SEARCH SUBJECT..."
+              placeholder={capitalize("SEARCH SUBJECTs...")}
               className="grow text-sm text-text placeholder-text bg-transparent focus:outline-none"
             />
           </div>
@@ -127,7 +128,7 @@ const TopBar = () => {
                 <div
                   key={i}
                   onClick={() => handleSelectSubject(s)}
-                  className="px-4 py-2 text-sm text-text hover:bg-[#3f3f46]/30 cursor-pointer transition"
+                  className="px-4 py-2 text-sm text-text hover:bg-[#61766c] cursor-pointer bg-background transition"
                 >
                   <div className="font-semibold text-green-400">{s.name}</div>
                   <div className="text-xs text-bdy">
@@ -219,23 +220,23 @@ const TopBar = () => {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="SEARCH SUBJECT..."
-                  className="flex-grow text-sm text-text bg-transparent focus:outline-none"
+                  placeholder={capitalize("SEARCH SUBJECTs...")}
+                  className="grow text-sm text-text bg-box focus:outline-none"
                 />
               </div>
 
               {suggestions.length > 0 && (
-                <div className="absolute top-full mt-2 w-full bg-box border border-border rounded-xl shadow-lg max-h-60 overflow-y-auto z-50">
+                <div className="absolute top-full mt-2 w-full bg-box border border-border rounded-xl shadow-lg  max-h-60 overflow-y-auto z-50">
                   {suggestions.map((s, i) => (
                     <div
                       key={i}
                       onClick={() => handleSelectSubject(s)}
-                      className="px-4 py-2 text-sm text-text hover:bg-[#3f3f46]/30 cursor-pointer transition"
+                      className="px-4  py-2 text-sm  text-text bg-background cursor-pointer transition hover:bg-[#61766c]"
                     >
-                      <div className="font-semibold text-green-400">
+                      <div className="font-semibold  text-green-400">
                         {s.name}
                       </div>
-                      <div className="text-xs text-bdy">
+                      <div className="text-xs  text-bdy">
                         {Array.isArray(s.branch)
                           ? s.branch.join(" / ")
                           : s.branch}{" "}

@@ -119,6 +119,12 @@ export default function SubjectPage() {
       s.semester.includes(selectedSem || 0)
   );
 
+  // Tabs array, conditionally remove "lab" if no lab data
+  const tabs = ["syllabus", "questions", "videos"];
+  if (selectedSubject?.lab && Object.keys(selectedSubject.lab).length > 0) {
+    tabs.splice(1, 0, "lab"); // insert "lab" in second position
+  }
+
   return (
     <div className="min-h-screen bg-background text-bdy px-6 md:px-12 py-10 flex justify-center">
       {loading ? (
@@ -147,7 +153,9 @@ export default function SubjectPage() {
                   }}
                   className="border border-[#3f3f46] rounded-lg px-3 py-2 text-sm bg-box text-bdy focus:outline-none"
                 >
-                  <option value="">Select Branch</option>
+                  <option value="" hidden disabled>
+                    Select Branch
+                  </option>
                   {[...new Set(subjects.flatMap((s) => s.branch))].map((br) => (
                     <option key={br} value={br}>
                       {br}
@@ -168,7 +176,9 @@ export default function SubjectPage() {
                     }}
                     className="border border-[#3f3f46] rounded-lg px-3 py-2 text-sm bg-box text-textbdy focus:outline-none"
                   >
-                    <option value="">Select Semester</option>
+                    <option value="" hidden disabled>
+                      Select Semester
+                    </option>
                     {[...new Set(subjects.flatMap((s) => s.semester))].map(
                       (sem) => (
                         <option key={sem} value={sem}>
@@ -261,7 +271,7 @@ export default function SubjectPage() {
                 {/* Tabs */}
                 <div className="border-2 border-[#3f3f46] rounded-xl bg-transparent p-2 overflow-x-auto scrollbar-thin scrollbar-thumb-[#3f3f46] scrollbar-track-transparent md:flex justify-center items-center">
                   <div className="flex gap-3 w-max font-semibold text-sm sm:text-base">
-                    {["syllabus", "lab", "questions", "videos"].map((tab) => (
+                    {tabs.map((tab) => (
                       <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
@@ -308,21 +318,23 @@ export default function SubjectPage() {
                   </div>
                 )}
 
-                {activeTab === "lab" && (
-                  <div className="text-sm text-textbdy space-y-2">
-                    {Object.entries(selectedSubject.lab || {}).map(
-                      ([exp, details]) => (
-                        <div
-                          key={exp}
-                          className="border border-[#3f3f46] rounded-md p-3"
-                        >
-                          <p className="font-semibold">{capitalize(exp)}</p>
-                          <p>{details as string}</p>
-                        </div>
-                      )
-                    )}
-                  </div>
-                )}
+                {activeTab === "lab" &&
+                  selectedSubject.lab &&
+                  Object.keys(selectedSubject.lab).length > 0 && (
+                    <div className="text-sm text-textbdy space-y-2">
+                      {Object.entries(selectedSubject.lab).map(
+                        ([exp, details]) => (
+                          <div
+                            key={exp}
+                            className="border border-[#3f3f46] rounded-md p-3"
+                          >
+                            <p className="font-semibold">{capitalize(exp)}</p>
+                            <p>{details as string}</p>
+                          </div>
+                        )
+                      )}
+                    </div>
+                  )}
 
                 {activeTab === "questions" && (
                   <div className="text-sm text-textbdy space-y-2">

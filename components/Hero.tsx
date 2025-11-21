@@ -44,14 +44,15 @@ const Hero = () => {
               {HERO_DESCRIPTION}
             </p>
             <p className=" sm:text-base md:text-lg lg:text-2xl text-bdy leading-relaxed font-tenor max-w-2xl">
-              {capitalize("CURRENTLY AVAILABLE FOR SEM 1 & 3")}
+              {capitalize("CURRENTLY AVAILABLE FOR SEM 3, ")}
+              {capitalize("more coming soon.")}
             </p>
           </div>
 
           {/* RIGHT SIDE */}
           <div className="order-1 lg:order-2 flex justify-center lg:justify-end w-full">
-            <div className="rounded-2xl border-[1.5px] w-full max-w-[480px] p-8 bg-box border-[#3f3f46]">
-              <p className="text-center font-bold uppercase mb-8">
+            <div className="rounded-2xl border-[1.5px] w-full max-w-[480px] p-6 bg-box sm:py-20 border-[#3f3f46]">
+              <p className="text-center  font-bold uppercase mb-12">
                 <span className="block text-3xl font-tenor text-text tracking-[0.2em]">
                   {HERO_BRANCH_HEADING}
                 </span>
