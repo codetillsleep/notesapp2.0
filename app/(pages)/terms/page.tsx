@@ -66,7 +66,7 @@ const Terms = () => {
         <p className="text-bdy text-lg leading-relaxed">
           For any concerns or suggestions, please contact us at{" "}
           <a
-            href="mailto:10gpa@gmail.com"
+            href="mailto:codetillsleep@gmail.com"
             className="text-prime hover:underline"
           >
             10gpa@gmail.com

@@ -10,7 +10,6 @@ const subjectSchema = new Schema(
     theoryCredits: { type: Number, default: 0 },
     labCredits: { type: Number, default: 0 },
 
-    // ✅ store as Mixed type to allow any structure
     syllabus: { type: mongoose.Schema.Types.Mixed, default: {} },
     lab: { type: mongoose.Schema.Types.Mixed, default: {} },
 

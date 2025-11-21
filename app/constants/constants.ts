@@ -6,7 +6,7 @@ export const GITHUB_URL = "https://github.com/codetillsleep";
 export const SITE_TITLE = "10GPA";
 // app/constant/constants.ts
 
-// ✅ Hero Section
+//  Hero Section
 export const HERO_TITLE = "10GPA";
 export const HERO_SUBTITLE = "Everything You Need";
 export const HERO_DESCRIPTION =
@@ -15,7 +15,7 @@ export const HERO_DESCRIPTION =
 export const HERO_BRANCHES = ["CSAM", "CYBER"];
 export const HERO_BRANCH_HEADING = "SELECT YOUR BRANCH AND SEM";
 export const HERO_SEMS = ["1", "3"];
-// ✅ Date Sheet Data
+//  Date Sheet Data
 export const DATESHEET_DATA = [
   {
     branch: "CSAM",

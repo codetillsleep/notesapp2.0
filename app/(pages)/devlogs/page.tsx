@@ -15,7 +15,7 @@ const devLogs = [
       "Refined component structure and introduced global constants for cleaner code",
     ],
   },
-  // You can add future logs here:
+  //futurelogs template
   // {
   //   version: "10GPA 2.0 v0.2",
   //   date: "November 2025",

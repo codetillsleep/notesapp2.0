@@ -13,7 +13,6 @@ const TopBar = () => {
   const [subjects, setSubjects] = useState<any[]>([]);
   const router = useRouter();
 
-  // ✅ Fetch all subjects
   useEffect(() => {
     const loadSubjects = async () => {
       try {
@@ -28,7 +27,6 @@ const TopBar = () => {
     loadSubjects();
   }, []);
 
-  // ✅ Theme setup
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
     const prefersDark = window.matchMedia(
@@ -46,7 +44,6 @@ const TopBar = () => {
     localStorage.setItem("theme", newDark ? "dark" : "light");
   };
 
-  // ✅ Smart fuzzy search
   useEffect(() => {
     if (!searchQuery.trim()) {
       setSuggestions([]);
@@ -67,7 +64,6 @@ const TopBar = () => {
     setSuggestions(matches);
   }, [searchQuery, subjects]);
 
-  // ✅ Handle subject selection (instant update)
   const handleSelectSubject = async (subject: any) => {
     const selectedBranch =
       Array.isArray(subject.branch) && subject.branch.length > 0
@@ -79,15 +75,12 @@ const TopBar = () => {
         ? subject.semester[0]
         : subject.semester || "";
 
-    // Save all details
     localStorage.setItem("selectedBranch", selectedBranch);
     localStorage.setItem("selectedSem", String(selectedSem));
     localStorage.setItem("selectedSubjectName", subject.name);
 
-    // ✅ Fire an instant custom event so SubjectPage updates immediately
     window.dispatchEvent(new Event("subject-selection"));
 
-    // Short delay for smooth transition
     await new Promise((res) => setTimeout(res, 100));
 
     setSearchQuery("");
@@ -108,7 +101,6 @@ const TopBar = () => {
     <nav className="fixed top-0 left-0 w-full z-50 bg-background  backdrop-blur-lg">
       {/* Desktop Nav */}
       <div className="hidden lg:flex items-center justify-between w-full px-8 py-4">
-        {/* Left Links */}
         <div className="flex items-center space-x-8 text-sm font-semibold text-text tracking-widest">
           {NAV_LINKS.map((item) => (
             <Link key={item} href={getLinkHref(item)}>
@@ -117,7 +109,6 @@ const TopBar = () => {
           ))}
         </div>
 
-        {/* Search */}
         <div className="relative flex items-center w-1/3">
           <div className="flex items-center w-full px-3 py-2 border border-border rounded-full transition bg-box">
             <Search size={16} className="text-text mr-2" />
@@ -126,7 +117,7 @@ const TopBar = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="SEARCH SUBJECT..."
-              className="flex-grow text-sm text-text placeholder-text bg-transparent focus:outline-none"
+              className="grow text-sm text-text placeholder-text bg-transparent focus:outline-none"
             />
           </div>
 
@@ -152,7 +143,6 @@ const TopBar = () => {
           )}
         </div>
 
-        {/* Right Icons */}
         <div className="flex items-center space-x-4">
           <Link href={GITHUB_URL} target="_blank">
             <Github size={30} className="text-drkmd transition" />
@@ -170,7 +160,6 @@ const TopBar = () => {
         </div>
       </div>
 
-      {/* Mobile Nav */}
       <div className="lg:hidden px-4 py-3">
         <div className="flex items-center justify-between">
           <Link
@@ -209,7 +198,6 @@ const TopBar = () => {
           </div>
         </div>
 
-        {/* Mobile Dropdown */}
         {isOpen && (
           <div className="mt-4 bg-background rounded-2xl shadow-lg p-4 space-y-4 transition-all duration-300">
             <div className="flex flex-col space-y-3 text-text font-semibold tracking-widest text-sm">
@@ -224,7 +212,6 @@ const TopBar = () => {
               ))}
             </div>
 
-            {/* Search in mobile */}
             <div className="relative">
               <div className="flex items-center w-full px-3 py-2 border border-border rounded-full transition bg-box">
                 <Search size={16} className="text-text mr-2" />

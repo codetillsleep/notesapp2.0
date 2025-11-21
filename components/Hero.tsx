@@ -20,7 +20,6 @@ const Hero = () => {
   const capitalize = (str: string) =>
     str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : "";
 
-  // auto navigate once both are selected
   useEffect(() => {
     if (selectedBranch && selectedSem) {
       localStorage.setItem("selectedBranch", selectedBranch);

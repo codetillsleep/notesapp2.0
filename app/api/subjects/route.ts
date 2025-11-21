@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/dbConnect";
 import { Subject } from "@/models/Subject";
 
-// 🟩 GET — fetch all subjects
+//  GET — fetch all subjects
 export async function GET() {
   try {
     console.log("🔹 Connecting to DB...");
@@ -20,16 +20,15 @@ export async function GET() {
   }
 }
 
-// 🟦 POST — add a new subject
+//  POST — add a new subject
 export async function POST(request: Request) {
   try {
     await connectDB();
     const body = await request.json();
 
-    // Check if the input is a single subject or array
     const subjects = Array.isArray(body) ? body : [body];
 
-    // Validate all required fields
+    // for validation
     for (const subj of subjects) {
       if (!subj.name || !subj.code || !subj.branch || !subj.semester) {
         return NextResponse.json(
@@ -39,7 +38,7 @@ export async function POST(request: Request) {
       }
     }
 
-    // Insert many at once
+    // code for insert many at once
     const newSubjects = await Subject.insertMany(subjects);
 
     return NextResponse.json(
@@ -55,7 +54,7 @@ export async function POST(request: Request) {
   }
 }
 
-// 🟨 PATCH — update an existing subject
+// PATCH — update an existing subject
 export async function PATCH(request: Request) {
   try {
     await connectDB();

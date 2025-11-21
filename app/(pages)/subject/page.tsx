@@ -12,7 +12,6 @@ export default function SubjectPage() {
   const [selectedSubject, setSelectedSubject] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // ➤ Drag Scroll Ref
   const dragScrollRef = useRef<any>(null);
   let isDown = false;
   let startX: number;
@@ -39,14 +38,13 @@ export default function SubjectPage() {
     if (!isDown) return;
     e.preventDefault();
     const x = e.pageX - dragScrollRef.current.offsetLeft;
-    const walk = (x - startX) * 2; // speed
+    const walk = (x - startX) * 2;
     dragScrollRef.current.scrollLeft = scrollLeft - walk;
   };
 
   const capitalize = (str: string) =>
     str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : "";
 
-  // Load subjects
   useEffect(() => {
     const loadSubjects = async () => {
       try {
@@ -63,7 +61,6 @@ export default function SubjectPage() {
     loadSubjects();
   }, []);
 
-  // YouTube thumbnail helper
   const getYoutubeThumbnail = (url: string) => {
     try {
       const videoIdMatch = url.match(/(?:v=|youtu\.be\/)([^&]+)/);
@@ -80,7 +77,6 @@ export default function SubjectPage() {
     return null;
   };
 
-  // Apply saved filters
   const applySelection = () => {
     const branch = localStorage.getItem("selectedBranch");
     const sem = localStorage.getItem("selectedSem");
@@ -104,7 +100,6 @@ export default function SubjectPage() {
     if (subjects.length > 0) applySelection();
   }, [subjects]);
 
-  // Sync updates
   useEffect(() => {
     const handleSelectionChange = () => applySelection();
     window.addEventListener("subject-selection", handleSelectionChange);
@@ -226,7 +221,6 @@ export default function SubjectPage() {
 
           {/* RIGHT PANEL */}
           <div className="flex-1 flex flex-col gap-6">
-            {/* ★★★ SUBJECT SCROLL BAR WITH DRAG ★★★ */}
             <div
               ref={dragScrollRef}
               onMouseDown={handleMouseDown}
