@@ -44,6 +44,13 @@ export const metadata: Metadata = {
     ],
     type: "website",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "10GPA – GGSIPU B.Tech Study Materials, Notes & PYQs",
+    description:
+      "10GPA provides free B.Tech study materials, notes, previous year questions, and resources to help you ace your exams.",
+    images: ["https://10gpa.in/og-image.png"],
+  },
   icons: {
     icon: "/og-image-removebg-preview.png",
   },
