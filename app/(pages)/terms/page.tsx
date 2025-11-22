@@ -69,7 +69,7 @@ const Terms = () => {
             href="mailto:codetillsleep@gmail.com"
             className="text-prime hover:underline"
           >
-            10gpa@gmail.com
+            codetillsleep@gmail.com
           </a>
           .
         </p>
