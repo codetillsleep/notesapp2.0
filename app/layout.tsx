@@ -12,12 +12,17 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "10GPA – B.Tech Study Materials, Notes & PYQs",
+  title: "10GPA – GGSIPU B.Tech Study Materials, Syllabus & PYQs",
   description:
-    "10GPA provides free B.Tech study materials, notes, previous year questions, and resources to help you ace your exams.",
+    "10GPA provides free B.Tech study materials, previous year questions, and resources to help you ace your exams.",
   keywords: [
     "10GPA",
     "B.Tech notes",
+    "ggsipu pyqs",
+    "btech pyqs",
+    "ipu pyqs",
+    "ipu study materials pyqs",
+    "ggsipu pyqs",
     "study materials",
     "PYQs",
     "exam preparation",
@@ -28,9 +33,10 @@ export const metadata: Metadata = {
       "10GPA provides free B.Tech study materials, notes, previous year questions, and resources to help you ace your exams.",
     url: "https://10gpa.in",
     siteName: "10GPA",
+
     images: [
       {
-        url: "https://10gpa.in/og-image.jpg", // Replace with your actual image URL
+        url: "https://10gpa.in/og-image.png", // Replace with your actual image URL
         width: 1200,
         height: 630,
         alt: "10GPA Study Materials",
@@ -38,16 +44,8 @@ export const metadata: Metadata = {
     ],
     type: "website",
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "10GPA – B.Tech Study Materials, Notes & PYQs",
-    description:
-      "10GPA provides free B.Tech study materials, notes, previous year questions, and resources to help you ace your exams.",
-    images: ["https://10gpa.in/og-image.jpg"], // Replace with your actual image URL
-  },
   icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
+    icon: "/og-image-removebg-preview.png",
   },
 };
 

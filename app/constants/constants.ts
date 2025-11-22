@@ -1,5 +1,5 @@
 // app/constant/constants.ts
-export const NAV_LINKS = ["Home", "About", "Datesheet", "Dev Logs"];
+export const NAV_LINKS = ["Home", "About", "Dev Logs"];
 
 export const GITHUB_URL = "https://github.com/codetillsleep";
 
