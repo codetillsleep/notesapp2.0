@@ -65,10 +65,10 @@ const PrivacyPolicy = () => {
           If you have any questions about this Privacy Policy, feel free to
           contact us at{" "}
           <a
-            href="mailto:10gpa@gmail.com"
+            href="mailto:codetillsleep@gmail.com"
             className="text-prime hover:underline"
           >
-            10gpa@gmail.com
+            codetillsleep@gmail.com
           </a>
           .
         </p>
