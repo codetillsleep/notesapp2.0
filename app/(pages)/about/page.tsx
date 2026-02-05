@@ -87,10 +87,10 @@ const AboutPage = () => {
           <p className="text-bdy text-base leading-relaxed">
             Have feedback, ideas, or found an issue? Reach out at{" "}
             <a
-              href="mailto:10gpa@gmail.com"
+              href="mailto:codetillsleep@gmail.com"
               className="text-text hover:underline"
             >
-              10gpa@gmail.com
+              codetillsleep@gmail.com
             </a>{" "}
             — we’d love to hear from you!
           </p>

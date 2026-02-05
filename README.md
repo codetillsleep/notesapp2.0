@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+<br />
+<div align="center">
+  <a href="https://www.10gpa.in/" target="_blank">
+    <img alt="Logo" width="80" height="80" src="https://github.com/user-attachments/assets/77cd9149-cafb-4a7a-ba60-e12695f1e1f3" />
+  </a>
+
+<h3 align="center">
+  <a href="https://www.10gpa.in/" target="_blank">10gpa.in</a>
+</h3>
+
+
+  <p align="center">
+    B.Tech CSAM & CYBER study materials, previous year questions, and exam resources.
+    <br />
+  
+  </p>
+</div>
+
+
+
+## About The Project
+
+<img width="1885" height="836" alt="image" src="https://github.com/user-attachments/assets/9f1732b0-20cc-42c5-beeb-1db4d2513e26" />
+
+
+There are many Sites for GGSIPU resources but no one provides resources for new branches like csam and cyber and others alike. this site solves for that and focuses on to point exam resources like pyqs and videos.
+We strictly discourage using pirated book links, So our site does not provide that other authentic materials like pyqs video links and playlist are available in an easy to access way.
+
+
+
+### Built With
+
+This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
+
+- [Next.js](https://nextjs.org/)
+- [Node.js](https://nodejs.org/)
+- [Express](https://expressjs.com/)
+- [MongoDB](https://www.mongodb.com/atlas)
+
+
+
+
+
 
 ## Getting Started
 
-First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Prerequisites
+1. Clone this repo
+   ```sh
+   git clone git@github.com:codetillsleep/notesapp2.0.git
+   
+   ```
+   
+   or for https
+    ```sh
+   git clone https://github.com/codetillsleep/notesapp2.0.git
+   
+   ```
+   
+   
+### Installation
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. setup .env.local
+```sh
+   MONGODB_URI= Your MongoDB URI
+   ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Install NPM packages
+   ```sh
+   npm install
+   ```
+4. To run locally
+   ```sh
+   npm run dev
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
