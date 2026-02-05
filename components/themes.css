@@ -1,63 +1,16 @@
-@import url("https://fonts.googleapis.com/css2?family=Courgette&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Courgette&family=Tenor+Sans&display=swap");
-@import "tailwindcss";
-
-/* Import theme variables */
-@import "../components/themes.css";
-
-@theme {
-  --color-background: var(--background);
-  --color-border: var(--border);
-  --color-text: var(--text);
-  --font-tenor: "Tenor Sans", sans-serif;
-  --font-courgette: "Courgette", cursive;
-  --color-bdy: var(--textbdy);
-  --color-prime: var(--textprime);
-  --color-bdrl: var(--borderlight);
-  --color-drkmd: var(--darkmodeclr);
-  --color-backgroundmbl: var(--mobile);
-  --color-box: var(--box);
-  --color-tab: var(--tabs);
-}
-
+/* Theme Variables */
 :root {
-  /* Default Sky Theme */
+  /* Sky Theme (Default) */
   --primary-light: 14 165 233; /* sky-500 */
   --primary-dark: 56 189 248; /* sky-400 */
   --secondary-light: 16 185 129; /* emerald-500 */
   --secondary-dark: 52 211 153; /* emerald-400 */
   --accent-light: 59 130 246; /* blue-500 */
   --accent-dark: 96 165 250; /* blue-400 */
-
-  /* Original color scheme - now integrated with theme system */
-  --background: #fafafa; /* slate-50 */
-  --text: rgb(var(--primary-light)); /* Uses theme primary */
-  --textbdy: #1e293b; /* slate-800 */
-  --textprime: rgb(var(--primary-light)); /* Uses theme primary */
-  --border: #3f3f46; /* zinc-700 */
-  --borderlight: rgb(var(--primary-light)); /* Uses theme primary */
-  --darkmodeclr: #0f172a; /* slate-900 */
-  --mobile: #e2e8f0; /* slate-200 */
-  --box: #ffffff; /* white */
-  --tabs: rgb(var(--secondary-light)); /* Uses theme secondary */
 }
 
-.dark {
-  /* Dark mode uses theme dark variants */
-  --background: #09090b; /* zinc-950 */
-  --text: rgb(var(--primary-dark)); /* Uses theme primary dark */
-  --textbdy: #e2e8f0; /* slate-200 */
-  --textprime: rgb(var(--primary-dark)); /* Uses theme primary dark */
-  --border: #3f3f46; /* zinc-700 */
-  --borderlight: rgb(var(--primary-dark)); /* Uses theme primary dark */
-  --darkmodeclr: #f8fafc; /* slate-50 */
-  --mobile: #27272a; /* zinc-800 */
-  --box: #18181b; /* zinc-900 */
-  --tabs: rgb(var(--secondary-dark)); /* Uses theme secondary dark */
-}
-
-/* Ocean Theme */
 [data-theme="ocean"] {
+  /* Ocean Blue Theme */
   --primary-light: 59 130 246; /* blue-500 */
   --primary-dark: 96 165 250; /* blue-400 */
   --secondary-light: 6 182 212; /* cyan-500 */
@@ -66,8 +19,8 @@
   --accent-dark: 56 189 248; /* sky-400 */
 }
 
-/* Sunset Theme */
 [data-theme="sunset"] {
+  /* Sunset Orange Theme */
   --primary-light: 249 115 22; /* orange-500 */
   --primary-dark: 251 146 60; /* orange-400 */
   --secondary-light: 251 191 36; /* amber-500 */
@@ -76,8 +29,8 @@
   --accent-dark: 248 113 113; /* red-400 */
 }
 
-/* Forest Theme */
 [data-theme="forest"] {
+  /* Forest Green Theme */
   --primary-light: 34 197 94; /* green-500 */
   --primary-dark: 74 222 128; /* green-400 */
   --secondary-light: 16 185 129; /* emerald-500 */
@@ -86,8 +39,8 @@
   --accent-dark: 163 230 53; /* lime-400 */
 }
 
-/* Purple Grape Theme */
 [data-theme="purple"] {
+  /* Purple Grape Theme */
   --primary-light: 168 85 247; /* purple-500 */
   --primary-dark: 192 132 252; /* purple-400 */
   --secondary-light: 217 70 239; /* fuchsia-500 */
@@ -96,8 +49,8 @@
   --accent-dark: 244 114 182; /* pink-400 */
 }
 
-/* Rose Pink Theme */
 [data-theme="rose"] {
+  /* Rose Pink Theme */
   --primary-light: 244 63 94; /* rose-500 */
   --primary-dark: 251 113 133; /* rose-400 */
   --secondary-light: 236 72 153; /* pink-500 */
@@ -106,38 +59,14 @@
   --accent-dark: 248 113 113; /* red-400 */
 }
 
-/* Midnight Indigo Theme */
 [data-theme="midnight"] {
+  /* Midnight Indigo Theme */
   --primary-light: 99 102 241; /* indigo-500 */
   --primary-dark: 129 140 248; /* indigo-400 */
   --secondary-light: 139 92 246; /* violet-500 */
   --secondary-dark: 167 139 250; /* violet-400 */
   --accent-light: 168 85 247; /* purple-500 */
   --accent-dark: 192 132 252; /* purple-400 */
-}
-
-/* Smooth transitions for theme changes */
-* {
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease,
-    border-color 0.3s ease !important;
-}
-
-html[data-theme-loaded="true"] * {
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease,
-    border-color 0.3s ease !important;
-}
-
-/* Hide scrollbar but keep scroll functionality */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.no-scrollbar {
-  -ms-overflow-style: none; /* IE/Edge */
-  scrollbar-width: none; /* Firefox */
 }
 
 /* Utility Classes */
