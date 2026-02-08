@@ -2,7 +2,7 @@
 <br />
 <div align="center">
   <a href="https://www.10gpa.in/" target="_blank">
-    <img alt="Logo" width="80" height="80" src="https://github.com/user-attachments/assets/77cd9149-cafb-4a7a-ba60-e12695f1e1f3" />
+    <img width="1902" height="854" alt="image" src="https://github.com/user-attachments/assets/a7134d9d-03e0-4fb4-b256-35d37837dbc7" />
   </a>
 
 <h3 align="center">
