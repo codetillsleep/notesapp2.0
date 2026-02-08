@@ -1,10 +1,6 @@
 
 <br />
 <div align="center">
-  <a href="https://www.10gpa.in/" target="_blank">
-    <img width="1902" height="854" alt="image" src="https://github.com/user-attachments/assets/a7134d9d-03e0-4fb4-b256-35d37837dbc7" />
-  </a>
-
 <h3 align="center">
   <a href="https://www.10gpa.in/" target="_blank">10gpa.in</a>
 </h3>
@@ -13,25 +9,19 @@
   <p align="center">
     B.Tech CSAM & CYBER study materials, previous year questions, and exam resources.
     <br />
-  
   </p>
 </div>
 
-
-
 ## About The Project
+<img width="1902" height="854" alt="image" src="https://github.com/user-attachments/assets/7ba3bd90-e743-4e9c-bebb-ba2482bd6bb5" />
 
-<img width="1885" height="836" alt="image" src="https://github.com/user-attachments/assets/9f1732b0-20cc-42c5-beeb-1db4d2513e26" />
 
-
-There are many Sites for GGSIPU resources but no one provides resources for new branches like csam and cyber and others alike. this site solves for that and focuses on to point exam resources like pyqs and videos.
-We strictly discourage using pirated book links, So our site does not provide that other authentic materials like pyqs video links and playlist are available in an easy to access way.
+There are many Sites for GGSIPU resources but no one provides resources for new branches like CSAM (Computer Science & Applied Mathematics). this site solves for that and focuses on to the point exam resources like pyqs and videos.
+We strictly discourage using pirated book links, So our site does not provide that. Other authentic materials like pyqs video links and playlist are available in an easy to access way.
 
 
 
 ### Built With
-
-This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
 
 - [Next.js](https://nextjs.org/)
 - [Node.js](https://nodejs.org/)
