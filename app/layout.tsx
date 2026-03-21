@@ -3,7 +3,10 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ThemeScript from "./theme-script";
 import TopBar from "@/components/topBar";
+import { SessionProvider } from "next-auth/react";
 import Footer from "@/components/Footer";
+
+import Providers from "./providers";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({
@@ -62,33 +65,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  const savedTheme = localStorage.getItem('theme');
-                  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                  if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-                    document.documentElement.classList.add('dark');
-                  } else {
-                    document.documentElement.classList.remove('dark');
-                  }
-                  document.documentElement.dataset.themeLoaded = "true";
-                } catch (e) {}
-              })();
-            `,
-          }}
-        />
-      </head>
+    <html lang="en" suppressHydrationWarning>
+      <body className="...">
+        <ThemeScript />
 
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-text`}
-      >
-        <TopBar />
-        <main className="pt-20">{children}</main> <Footer />
+        <Providers>
+          <main className="">{children}</main>
+        </Providers>
       </body>
     </html>
   );
