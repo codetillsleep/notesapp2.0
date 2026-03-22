@@ -1,5 +1,7 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
+import GitHubProvider from "next-auth/providers/github";
 import { connectDB } from "@/lib/dbConnect";
 import User from "@/models/User";
 import bcrypt from "bcryptjs";
@@ -9,16 +11,20 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: {},
-        password: {},
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
       },
-
       async authorize(credentials) {
         await connectDB();
 
         const user = await User.findOne({ email: credentials?.email });
 
         if (!user) throw new Error("No user found");
+
+        // Check if user has a password (not OAuth user)
+        if (!user.password) {
+          throw new Error("Please sign in with Google or GitHub");
+        }
 
         const isValid = await bcrypt.compare(
           credentials!.password,
@@ -34,6 +40,16 @@ export const authOptions: NextAuthOptions = {
         };
       },
     }),
+
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+
+    GitHubProvider({
+      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+    }),
   ],
 
   session: {
@@ -41,14 +57,56 @@ export const authOptions: NextAuthOptions = {
   },
 
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) token.id = user.id;
+    async signIn({ user, account }) {
+      // Handle OAuth sign-in
+      if (account?.provider === "google" || account?.provider === "github") {
+        await connectDB();
+
+        const existingUser = await User.findOne({ email: user.email });
+
+        if (!existingUser) {
+          // Create new user for OAuth
+          await User.create({
+            name: user.name,
+            email: user.email,
+            image: user.image,
+            provider: account.provider,
+            // No password for OAuth users
+          });
+        } else {
+          // Update existing user with OAuth info if needed
+          if (!existingUser.provider) {
+            existingUser.provider = account.provider;
+            existingUser.image = user.image;
+            await existingUser.save();
+          }
+        }
+      }
+
+      return true;
+    },
+
+    async jwt({ token, user, account }) {
+      if (user) {
+        token.id = user.id;
+      }
+      if (account) {
+        token.provider = account.provider;
+      }
       return token;
     },
+
     async session({ session, token }) {
-      if (session.user) session.user.id = token.id as string;
+      if (session.user) {
+        session.user.id = token.id as string;
+      }
       return session;
     },
+  },
+
+  pages: {
+    signIn: "/login",
+    error: "/login",
   },
 
   secret: process.env.NEXTAUTH_SECRET,

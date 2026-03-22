@@ -19,6 +19,7 @@ export async function POST(req: Request) {
     name,
     email,
     password: hashedPassword,
+    provider: "credentials", // Add this line
   });
 
   return NextResponse.json({ message: "User created" });

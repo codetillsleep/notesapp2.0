@@ -13,16 +13,15 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [isDark, setIsDark] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [isHovered, setIsHovered] = useState<string | null>(null);
 
-  // redirect if already logged in
+  // Redirect if already logged in
   useEffect(() => {
     if (status === "authenticated") {
       router.push("/");
     }
   }, [status, router]);
 
-  // detect theme
+  // Detect theme
   useEffect(() => {
     const root = document.documentElement;
     setIsDark(root.classList.contains("dark"));
@@ -66,8 +65,10 @@ export default function LoginPage() {
 
   if (status === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-zinc-950 via-slate-950 to-zinc-900">
-        <Loader2 className="w-8 h-8 text-primary animate-spin" />
+      <div
+        className={`min-h-screen flex items-center justify-center ${isDark ? "bg-[#0a0d1a]" : "bg-white"}`}
+      >
+        <Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
       </div>
     );
   }
@@ -75,100 +76,74 @@ export default function LoginPage() {
   return (
     <div
       className={`min-h-screen flex items-center justify-center px-4 py-8 transition-colors duration-500 ${
-        isDark
-          ? "bg-gradient-to-br from-zinc-950 via-slate-950 to-zinc-900"
-          : "bg-gradient-to-br from-slate-50 via-white to-slate-100"
+        isDark ? "bg-[#0a0d1a]" : "bg-white"
       }`}
     >
       {/* Animated Background Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div
-          className={`absolute top-20 right-20 w-96 h-96 rounded-full blur-3xl animate-pulse ${
-            isDark ? "opacity-10" : "opacity-30"
-          }`}
-          style={{
-            animationDuration: "4s",
-            backgroundColor: isDark
-              ? `rgba(var(--primary-dark), 0.15)`
-              : `rgba(var(--primary-light), 0.3)`,
-          }}
-        />
-        <div
-          className={`absolute bottom-20 left-20 w-[500px] h-[500px] rounded-full blur-3xl animate-pulse ${
-            isDark ? "opacity-10" : "opacity-20"
-          }`}
-          style={{
-            animationDuration: "6s",
-            animationDelay: "1s",
-            backgroundColor: isDark
-              ? `rgba(var(--secondary-dark), 0.15)`
-              : `rgba(var(--secondary-light), 0.2)`,
-          }}
-        />
+        <div className="absolute inset-0 opacity-10">
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `radial-gradient(circle at 2px 2px, ${isDark ? "#6366f1" : "#a5b4fc"} 1px, transparent 0)`,
+              backgroundSize: "40px 40px",
+            }}
+          />
+        </div>
+        <div className="absolute top-40 left-40 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-40 right-40 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
       </div>
 
       {/* Main Card Container */}
       <div className="relative w-full max-w-lg animate-fadeIn">
         {/* Login Card */}
         <div
-          className={`relative p-6 md:p-8 rounded-3xl border-2 backdrop-blur-xl shadow-2xl transition-all duration-300 ${
+          className={`relative p-8 rounded-3xl backdrop-blur-xl shadow-2xl transition-all duration-300 ${
             isDark
-              ? "bg-slate-900/70 border-slate-700"
-              : "bg-white/90 border-slate-200"
+              ? "bg-white/5 border border-white/10"
+              : "bg-white border border-gray-200"
           }`}
         >
-          {/* Decorative gradient overlay */}
-          <div
-            className="absolute inset-0 rounded-3xl pointer-events-none"
-            style={{
-              background: isDark
-                ? `linear-gradient(135deg, rgba(var(--primary-dark), 0.08), rgba(var(--secondary-dark), 0.08))`
-                : `linear-gradient(135deg, rgba(var(--primary-light), 0.08), rgba(var(--secondary-light), 0.08))`,
-            }}
-          />
-
-          <div className="relative space-y-5">
+          <div className="relative space-y-6">
             {/* Logo & Title */}
             <div className="text-center space-y-3 animate-slideDown">
               {/* Logo */}
               <div className="flex justify-center mb-4">
-                <div className="w-14 h-14 bg-gradient-primary rounded-2xl flex items-center justify-center shadow-lg transform hover:rotate-6 transition-transform duration-300">
+                <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-110 transition-transform duration-300">
                   <span className="text-white font-bold text-2xl">10</span>
                 </div>
               </div>
 
               <h1
                 className={`text-3xl md:text-4xl font-bold tracking-tight ${
-                  isDark ? "text-white" : "text-slate-900"
+                  isDark ? "text-white" : "text-gray-900"
                 }`}
               >
                 Welcome Back
               </h1>
               <p
-                className={`text-sm ${
-                  isDark ? "text-slate-400" : "text-slate-600"
-                }`}
+                className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}
               >
                 Login to continue your learning journey
               </p>
             </div>
 
             {/* Form Fields */}
-            <div className="space-y-3 animate-slideUp">
+            <div className="space-y-4 animate-slideUp">
               {/* Email Input */}
               <div className="relative group">
                 <label
-                  className={`block text-xs font-semibold mb-1.5 ml-1 ${
-                    isDark ? "text-slate-400" : "text-slate-600"
+                  className={`block text-xs font-semibold mb-2 ${
+                    isDark ? "text-gray-400" : "text-gray-700"
                   }`}
                 >
-                  EMAIL
+                  Email
                 </label>
                 <div className="relative">
                   <Mail
                     className={`absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${
-                      isDark ? "text-slate-500" : "text-slate-400"
-                    } group-focus-within:text-primary`}
+                      isDark ? "text-gray-500" : "text-gray-400"
+                    } group-focus-within:text-indigo-500`}
                   />
                   <input
                     type="email"
@@ -176,10 +151,10 @@ export default function LoginPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    className={`w-full pl-10 pr-4 py-3 rounded-xl border-2 font-medium text-sm focus:outline-none focus:ring-4 transition-all duration-300 ${
+                    className={`w-full pl-10 pr-4 py-3 rounded-xl text-sm focus:outline-none transition-all duration-200 ${
                       isDark
-                        ? "bg-slate-950 border-slate-700 text-white placeholder:text-slate-500 focus:border-primary focus:ring-primary/20"
-                        : "bg-white border-slate-300 text-slate-900 placeholder:text-slate-400 focus:border-primary focus:ring-primary/10"
+                        ? "bg-white/5 border border-white/10 text-white placeholder:text-gray-500 focus:bg-white/10 focus:border-indigo-500/50"
+                        : "bg-gray-100 border border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-indigo-500/50"
                     }`}
                   />
                 </div>
@@ -187,20 +162,20 @@ export default function LoginPage() {
 
               {/* Password Input */}
               <div className="relative group">
-                <div className="flex justify-between items-center mb-1.5">
+                <div className="flex justify-between items-center mb-2">
                   <label
-                    className={`block text-xs font-semibold ml-1 ${
-                      isDark ? "text-slate-400" : "text-slate-600"
+                    className={`block text-xs font-semibold ${
+                      isDark ? "text-gray-400" : "text-gray-700"
                     }`}
                   >
-                    PASSWORD
+                    Password
                   </label>
                   <a
                     href="/forgot-password"
                     className={`text-xs font-semibold hover:underline transition-colors ${
                       isDark
-                        ? "text-slate-400 hover:text-primary"
-                        : "text-slate-600 hover:text-primary"
+                        ? "text-indigo-400 hover:text-indigo-300"
+                        : "text-indigo-600 hover:text-indigo-500"
                     }`}
                   >
                     Forgot?
@@ -209,8 +184,8 @@ export default function LoginPage() {
                 <div className="relative">
                   <Lock
                     className={`absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${
-                      isDark ? "text-slate-500" : "text-slate-400"
-                    } group-focus-within:text-primary`}
+                      isDark ? "text-gray-500" : "text-gray-400"
+                    } group-focus-within:text-indigo-500`}
                   />
                   <input
                     type="password"
@@ -218,10 +193,10 @@ export default function LoginPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    className={`w-full pl-10 pr-4 py-3 rounded-xl border-2 font-medium text-sm focus:outline-none focus:ring-4 transition-all duration-300 ${
+                    className={`w-full pl-10 pr-4 py-3 rounded-xl text-sm focus:outline-none transition-all duration-200 ${
                       isDark
-                        ? "bg-slate-950 border-slate-700 text-white placeholder:text-slate-500 focus:border-primary focus:ring-primary/20"
-                        : "bg-white border-slate-300 text-slate-900 placeholder:text-slate-400 focus:border-primary focus:ring-primary/10"
+                        ? "bg-white/5 border border-white/10 text-white placeholder:text-gray-500 focus:bg-white/10 focus:border-indigo-500/50"
+                        : "bg-gray-100 border border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-indigo-500/50"
                     }`}
                   />
                 </div>
@@ -231,22 +206,22 @@ export default function LoginPage() {
               <button
                 onClick={handleLogin}
                 disabled={loading}
-                onMouseEnter={() => setIsHovered("login")}
-                onMouseLeave={() => setIsHovered(null)}
-                className={`w-full mt-3 py-3.5 rounded-xl font-bold text-sm tracking-widest transition-all duration-300 flex items-center justify-center gap-2 ${
+                className={`w-full mt-2 py-4 rounded-xl font-semibold text-sm transition-all duration-300 flex items-center justify-center gap-2 ${
                   loading
-                    ? "bg-slate-800 text-slate-500 cursor-not-allowed"
-                    : "bg-gradient-primary text-white shadow-primary hover:scale-[1.02]"
+                    ? isDark
+                      ? "bg-white/5 text-gray-600 cursor-not-allowed"
+                      : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                    : "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-xl hover:scale-105"
                 }`}
               >
                 {loading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    SIGNING IN...
+                    Signing in...
                   </>
                 ) : (
                   <>
-                    LOGIN
+                    Login
                     <ChevronRight className="w-4 h-4" />
                   </>
                 )}
@@ -254,21 +229,21 @@ export default function LoginPage() {
             </div>
 
             {/* Divider */}
-            <div className="relative py-3">
+            <div className="relative py-2">
               <div className="absolute inset-0 flex items-center">
                 <div
-                  className={`w-full border-t ${isDark ? "border-slate-700" : "border-slate-300"}`}
+                  className={`w-full border-t ${isDark ? "border-white/10" : "border-gray-200"}`}
                 ></div>
               </div>
               <div className="relative flex justify-center">
                 <span
-                  className={`px-3 text-xs font-medium tracking-wider ${
+                  className={`px-3 text-xs font-medium ${
                     isDark
-                      ? "bg-gradient-to-br from-slate-900/70 via-slate-900/70 to-slate-900/70 text-slate-500"
-                      : "bg-gradient-to-br from-white/90 via-white/90 to-white/90 text-slate-500"
+                      ? "bg-[#0a0d1a] text-gray-500"
+                      : "bg-white text-gray-500"
                   }`}
                 >
-                  OR CONTINUE WITH
+                  Or continue with
                 </span>
               </div>
             </div>
@@ -277,20 +252,13 @@ export default function LoginPage() {
             <div className="grid grid-cols-2 gap-3">
               {/* Google */}
               <button
-                onClick={() => signIn("google")}
-                onMouseEnter={() => setIsHovered("google")}
-                onMouseLeave={() => setIsHovered(null)}
-                className={`group relative overflow-hidden border-2 px-4 py-2.5 rounded-xl font-semibold text-xs tracking-wide transition-all duration-300 hover:shadow-lg hover:scale-[1.02] ${
+                onClick={() => signIn("google", { callbackUrl: "/" })}
+                className={`group relative overflow-hidden px-4 py-3 rounded-xl font-semibold text-sm transition-all duration-300 hover:scale-105 ${
                   isDark
-                    ? "bg-slate-900 border-slate-700 text-white hover:border-slate-600"
-                    : "bg-white border-slate-300 text-slate-900 hover:border-slate-400"
+                    ? "bg-white/5 border border-white/10 text-white hover:bg-white/10"
+                    : "bg-white border border-gray-200 text-gray-900 hover:bg-gray-50"
                 }`}
               >
-                <div
-                  className={`absolute inset-0 transform transition-transform duration-300 ${
-                    isDark ? "bg-slate-800" : "bg-slate-100"
-                  } ${isHovered === "google" ? "translate-x-0" : "-translate-x-full"}`}
-                />
                 <span className="relative flex items-center justify-center gap-2">
                   <svg className="w-4 h-4" viewBox="0 0 24 24">
                     <path
@@ -316,20 +284,13 @@ export default function LoginPage() {
 
               {/* GitHub */}
               <button
-                onClick={() => signIn("github")}
-                onMouseEnter={() => setIsHovered("github")}
-                onMouseLeave={() => setIsHovered(null)}
-                className={`group relative overflow-hidden border-2 px-4 py-2.5 rounded-xl font-semibold text-xs tracking-wide transition-all duration-300 hover:shadow-lg hover:scale-[1.02] ${
+                onClick={() => signIn("github", { callbackUrl: "/" })}
+                className={`group relative overflow-hidden px-4 py-3 rounded-xl font-semibold text-sm transition-all duration-300 hover:scale-105 ${
                   isDark
-                    ? "bg-slate-900 border-slate-700 text-white hover:border-slate-600"
-                    : "bg-white border-slate-300 text-slate-900 hover:border-slate-400"
+                    ? "bg-white/5 border border-white/10 text-white hover:bg-white/10"
+                    : "bg-white border border-gray-200 text-gray-900 hover:bg-gray-50"
                 }`}
               >
-                <div
-                  className={`absolute inset-0 transform transition-transform duration-300 ${
-                    isDark ? "bg-slate-800" : "bg-slate-100"
-                  } ${isHovered === "github" ? "translate-x-0" : "-translate-x-full"}`}
-                />
                 <span className="relative flex items-center justify-center gap-2">
                   <Github className="w-4 h-4" />
                   GitHub
@@ -339,14 +300,16 @@ export default function LoginPage() {
 
             {/* Sign Up Link */}
             <p
-              className={`text-center text-xs pt-2 ${
-                isDark ? "text-slate-400" : "text-slate-600"
-              }`}
+              className={`text-center text-sm pt-2 ${isDark ? "text-gray-400" : "text-gray-600"}`}
             >
               Don't have an account?{" "}
               <a
                 href="/signup"
-                className="text-primary font-semibold hover:underline transition-colors"
+                className={`font-semibold hover:underline transition-colors ${
+                  isDark
+                    ? "text-indigo-400 hover:text-indigo-300"
+                    : "text-indigo-600 hover:text-indigo-500"
+                }`}
               >
                 Sign up
               </a>
