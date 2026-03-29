@@ -1,9 +1,4 @@
 <div align="center">
-  <a href="https://www.10gpa.in/" target="_blank">
-    <img width="120" height="110" alt="10" src="https://github.com/user-attachments/assets/2fdc9874-78c7-4926-94b5-f781607270d5" />
-
-  </a>
-
   <h1 align="center">10GPA</h1>
   
   <p align="center">
