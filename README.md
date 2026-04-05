@@ -1,5 +1,6 @@
 <div align="center">
   <h1 align="center">10GPA</h1>
+
   
   <p align="center">
     <strong>Your Complete Study Companion for B.Tech Excellence</strong>
@@ -29,7 +30,7 @@
 
 ## Overview
 
-**10GPA** is a comprehensive educational platform designed specifically for B.Tech students in the CSAM (Computer Science & Applied Mathematics) and CYBER (Cyber Security & Forensics) branches at GGSIPU. The platform provides organized access to study materials, previous year questions, video lectures, and exam resources.
+**10GPA** is a comprehensive educational platform designed for B.Tech students in the CSAM (Computer Science & Applied Mathematics) and CYBER (Cyber Security & Forensics) branches at GGSIPU. The platform provides organized access to study materials, previous year questions, video lectures, and exam resources.
 
 ### Key Features
 
