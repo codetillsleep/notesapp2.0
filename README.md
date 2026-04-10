@@ -3,7 +3,7 @@
 
   
   <p align="center">
-    <strong>Your Complete Study Companion for B.Tech Excellence</strong>
+    <strong>Your Complete Study Companion for Excellence</strong>
     <br />
     Complete syllabus coverage, curated video lectures, comprehensive practice tests, and decade-old previous papers
     <br />
