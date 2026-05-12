@@ -11,9 +11,7 @@
     <a href="https://www.10gpa.in/" target="_blank"><strong>Visit Website</strong></a>
     <br />
     <br />
-    <a href="https://github.com/codetillsleep/notesapp2.0/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/codetillsleep/notesapp2.0/issues">Request Feature</a>
+  
   </p>
 
 
