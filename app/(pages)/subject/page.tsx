@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
+// Add to imports at top:
 import {
   ChevronDown,
   BookOpen,
@@ -11,6 +12,8 @@ import {
   X,
   Layers,
   Play,
+  Eye,
+  Download,
 } from "lucide-react";
 import Loader from "@/components/Loader";
 import TopBar from "@/components/topBar";
@@ -632,8 +635,9 @@ export default function SubjectPage() {
                         )}
 
                       {/* ── Questions ── */}
+                      {/* ── Questions ── */}
                       {activeTab === "questions" && (
-                        <div className="flex flex-col gap-2.5">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                           {selectedSubject.questions?.length ? (
                             selectedSubject.questions.map((q: any) => (
                               <a
@@ -641,7 +645,7 @@ export default function SubjectPage() {
                                 href={q.pdfUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className={`group flex items-center gap-4 px-5 py-4 rounded-xl border transition-all duration-200 hover:border-indigo-500/40 hover:scale-[1.01] ${
+                                className={`group flex flex-col gap-3 p-4 rounded-xl border transition-all duration-200 hover:border-indigo-500/40 hover:scale-[1.02] ${
                                   isDark
                                     ? "bg-white/[0.02] border-white/8 hover:bg-indigo-500/5"
                                     : "bg-white border-gray-200 hover:bg-indigo-50/50 hover:shadow-sm"
@@ -651,25 +655,41 @@ export default function SubjectPage() {
                                   <FileText className="w-4 h-4 text-indigo-400" />
                                 </div>
                                 <span
-                                  className={`text-sm font-medium flex-1 ${t.heading(isDark)}`}
+                                  className={`text-sm font-medium leading-snug flex-1 ${t.heading(isDark)}`}
                                 >
                                   {q.title}
                                 </span>
-                                <ChevronDown
-                                  className={`w-4 h-4 -rotate-90 transition-transform group-hover:translate-x-0.5 ${t.muted(isDark)}`}
-                                />
+                                {(q.views != null || q.downloads != null) && (
+                                  <div
+                                    className={`flex items-center gap-3 text-xs ${t.muted(isDark)}`}
+                                  >
+                                    {q.views != null && (
+                                      <span className="flex items-center gap-1">
+                                        <Eye className="w-3 h-3" />
+                                        {q.views}
+                                      </span>
+                                    )}
+                                    {q.downloads != null && (
+                                      <span className="flex items-center gap-1">
+                                        <Download className="w-3 h-3" />
+                                        {q.downloads}
+                                      </span>
+                                    )}
+                                  </div>
+                                )}
                               </a>
                             ))
                           ) : (
-                            <EmptyState
-                              icon={FileText}
-                              label="No question papers yet."
-                              isDark={isDark}
-                            />
+                            <div className="col-span-full">
+                              <EmptyState
+                                icon={FileText}
+                                label="No question papers yet."
+                                isDark={isDark}
+                              />
+                            </div>
                           )}
                         </div>
                       )}
-
                       {/* ── Videos ── */}
                       {activeTab === "videos" && (
                         <div>

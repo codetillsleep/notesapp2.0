@@ -13,16 +13,13 @@ import {
   BookOpen,
   Video,
   FileText,
-  Award,
   Clock,
   Zap,
-  Shield,
   ChevronDown,
   Target,
   Brain,
   Sparkles,
 } from "lucide-react";
-import Footer from "../Footer";
 
 const Hero = () => {
   const router = useRouter();
@@ -110,7 +107,6 @@ const Hero = () => {
 
   return (
     <div className={`${isDark ? "bg-[#0a0d1a]" : "bg-gray-50"}`}>
-      {/* SECTION 1: Full Screen Landing */}
       <div
         className={`relative min-h-screen flex items-center justify-center overflow-hidden pt-16 ${
           isDark ? "bg-[#0a0d1a]" : "bg-white"
@@ -321,7 +317,7 @@ const Hero = () => {
                       onClick={() => setSelectedSem(sem)}
                       className={`py-3 rounded-xl font-bold text-sm transition-all duration-300 ${
                         selectedSem === sem
-                          ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg scale-105"
+                          ? "bg-linear-to-r from-indigo-500 to-purple-500 text-white shadow-lg scale-105"
                           : isDark
                             ? "bg-white/5 text-gray-400 hover:bg-white/10"
                             : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
