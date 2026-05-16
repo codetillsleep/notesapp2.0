@@ -3,7 +3,7 @@
 
   
   <p align="center">
-    <strong>Your Complete Study Companion for B.Tech Excellence</strong>
+    <strong>Your Complete Study Companion for Excellence</strong>
     <br />
     Complete syllabus coverage, curated video lectures, comprehensive practice tests, and decade-old previous papers
     <br />
@@ -11,10 +11,9 @@
     <a href="https://www.10gpa.in/" target="_blank"><strong>Visit Website</strong></a>
     <br />
     <br />
-    <a href="https://github.com/codetillsleep/notesapp2.0/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/codetillsleep/notesapp2.0/issues">Request Feature</a>
+  
   </p>
+
 
   <p align="center">
     <a href="https://www.10gpa.in/" target="_blank">
@@ -67,6 +66,7 @@ While numerous educational resources exist for GGSIPU students, emerging branche
 </div>
 
 ---
+
 
 ## Technology Stack
 
