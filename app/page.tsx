@@ -6,8 +6,6 @@ import TopBar from "@/components/topBar";
 
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
-
-  // 🔒 Not logged in → redirect
   if (!session) {
     redirect("/login");
   }

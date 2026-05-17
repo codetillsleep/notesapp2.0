@@ -152,9 +152,6 @@ const TopBar = () => {
           <div className="flex items-center justify-between gap-4">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2.5 group shrink-0">
-              <div className="w-9 h-9 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110">
-                <span className="text-white font-bold text-lg">10</span>
-              </div>
               <span
                 className={`text-xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}
               >
@@ -344,7 +341,6 @@ const TopBar = () => {
                 </Link>
               ))}
 
-              {/* GitHub in mobile menu */}
               <a
                 href={GITHUB_URL}
                 target="_blank"
