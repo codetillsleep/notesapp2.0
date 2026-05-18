@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
-// Add to imports at top:
 import {
   ChevronDown,
   BookOpen,
@@ -14,6 +13,7 @@ import {
   Play,
   Eye,
   Download,
+  Sparkles,
 } from "lucide-react";
 import Loader from "@/components/Loader";
 import TopBar from "@/components/topBar";
@@ -58,6 +58,25 @@ function InfoRow({
       <span className={`text-sm font-semibold ${t.heading(isDark)}`}>
         {value}
       </span>
+    </div>
+  );
+}
+
+function EmptyState({
+  icon: Icon,
+  label,
+  isDark,
+}: {
+  icon: React.ElementType;
+  label: string;
+  isDark: boolean;
+}) {
+  return (
+    <div className="flex flex-col items-center justify-center py-16 gap-3">
+      <div className="w-11 h-11 rounded-xl bg-indigo-500/10 flex items-center justify-center">
+        <Icon className="w-5 h-5 text-indigo-400" />
+      </div>
+      <p className={`text-sm ${t.muted(isDark)}`}>{label}</p>
     </div>
   );
 }
@@ -119,31 +138,50 @@ export default function SubjectPage() {
     load();
   }, []);
 
-  const applySelection = () => {
+  // Auto-select first subject when branch+sem is set and subjects are loaded
+  const autoSelectFirst = (
+    branch: string,
+    sem: number,
+    allSubjects: any[],
+    savedSubjectName?: string | null,
+  ) => {
+    const filtered = allSubjects.filter(
+      (s) => s.branch.includes(branch) && s.semester.includes(sem),
+    );
+    if (!filtered.length) return;
+
+    const match = savedSubjectName
+      ? filtered.find(
+          (s) => s.name.toLowerCase() === savedSubjectName.toLowerCase(),
+        )
+      : null;
+
+    const toSelect = match ?? filtered[0];
+    setSelectedSubject(toSelect);
+    localStorage.setItem("selectedSubjectName", toSelect.name);
+  };
+
+  const applySelection = (allSubjects = subjects) => {
     const branch = localStorage.getItem("selectedBranch");
     const sem = localStorage.getItem("selectedSem");
     const subjName = localStorage.getItem("selectedSubjectName");
+
     if (branch) setSelectedBranch(branch);
     if (sem) setSelectedSem(Number(sem));
-    if (subjects.length && subjName) {
-      const match = subjects.find(
-        (s) =>
-          s.name.toLowerCase() === subjName.toLowerCase() &&
-          s.branch.includes(branch) &&
-          s.semester.includes(Number(sem)),
-      );
-      if (match) setSelectedSubject(match);
+
+    if (branch && sem && allSubjects.length) {
+      autoSelectFirst(branch, Number(sem), allSubjects, subjName);
     }
   };
 
   useEffect(() => {
-    if (subjects.length > 0) applySelection();
+    if (subjects.length > 0) applySelection(subjects);
   }, [subjects]);
 
   useEffect(() => {
-    window.addEventListener("subject-selection", applySelection);
+    window.addEventListener("subject-selection", () => applySelection());
     return () =>
-      window.removeEventListener("subject-selection", applySelection);
+      window.removeEventListener("subject-selection", () => applySelection());
   }, [subjects]);
 
   const toggleUnit = (idx: number) =>
@@ -179,7 +217,7 @@ export default function SubjectPage() {
     <div className={`min-h-screen ${t.bg(isDark)}`}>
       <TopBar />
 
-      {/* Background atmosphere — matches Hero */}
+      {/* Background atmosphere */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div
           className="absolute inset-0 opacity-[0.07]"
@@ -288,6 +326,14 @@ export default function SubjectPage() {
                                       "selectedSubjectName",
                                     );
                                     setSelectedSubject(null);
+                                    // Auto-select first subject if sem already chosen
+                                    if (selectedSem) {
+                                      autoSelectFirst(
+                                        br,
+                                        selectedSem,
+                                        subjects,
+                                      );
+                                    }
                                     window.dispatchEvent(
                                       new Event("subject-selection"),
                                     );
@@ -363,6 +409,14 @@ export default function SubjectPage() {
                                         "selectedSubjectName",
                                       );
                                       setSelectedSubject(null);
+                                      // Auto-select first subject for new sem
+                                      if (selectedBranch) {
+                                        autoSelectFirst(
+                                          selectedBranch,
+                                          sem,
+                                          subjects,
+                                        );
+                                      }
                                       window.dispatchEvent(
                                         new Event("subject-selection"),
                                       );
@@ -445,334 +499,346 @@ export default function SubjectPage() {
                   RIGHT PANEL
               ══════════════════════════════════════════════════ */}
               <div className="flex-1 min-w-0 flex flex-col gap-4">
-                {/* Subject pills — horizontal scroll */}
-                <div
-                  ref={dragScrollRef}
-                  onMouseDown={handleMouseDown}
-                  onMouseLeave={stopDrag}
-                  onMouseUp={stopDrag}
-                  onMouseMove={handleMouseMove}
-                  className={`rounded-2xl p-4 border overflow-x-auto no-scrollbar cursor-grab select-none ${t.card(isDark)}`}
-                >
-                  {filteredSubjects.length === 0 ? (
-                    <p
-                      className={`text-sm text-center py-1 ${t.muted(isDark)}`}
-                    >
-                      {selectedBranch && selectedSem
-                        ? "No subjects found for this selection."
-                        : "Select a branch and semester to see subjects."}
-                    </p>
-                  ) : (
-                    <div className="flex gap-2.5 flex-nowrap">
-                      {filteredSubjects.map((subj) => (
-                        <button
-                          key={subj._id}
-                          onClick={() => {
-                            setSelectedSubject(subj);
-                            setActiveTab("syllabus");
-                            localStorage.setItem(
-                              "selectedSubjectName",
-                              subj.name,
-                            );
-                            window.dispatchEvent(
-                              new Event("subject-selection"),
-                            );
-                            setSidebarOpen(false);
-                          }}
-                          className={`shrink-0 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
-                            selectedSubject?._id === subj._id
-                              ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/20 scale-105"
-                              : t.ghostBtn(isDark)
-                          }`}
-                        >
-                          {capitalize(subj.name)}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* Main content area */}
-                {selectedSubject ? (
+                {/* ── No branch/sem selected prompt ── */}
+                {!selectedBranch || !selectedSem ? (
                   <div
-                    className={`rounded-2xl border flex-1 animate-slideUp overflow-hidden ${t.card(isDark)}`}
+                    className={`rounded-2xl border flex-1 flex flex-col items-center justify-center py-24 gap-5 ${t.card(isDark)}`}
                   >
-                    {/* Subject header */}
-                    <div
-                      className={`px-6 py-5 border-b ${isDark ? "border-white/5" : "border-gray-100"}`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shrink-0 shadow-md shadow-indigo-500/20">
-                          <Layers className="w-5 h-5 text-white" />
-                        </div>
-                        <div>
-                          <h1
-                            className={`text-lg font-bold ${t.heading(isDark)}`}
-                          >
-                            {capitalize(selectedSubject.name)}
-                          </h1>
-                          <p className={`text-xs ${t.muted(isDark)}`}>
-                            {selectedBranch} &nbsp;·&nbsp; Semester{" "}
-                            {selectedSem}
-                          </p>
-                        </div>
-                      </div>
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center">
+                      <GraduationCap className="w-8 h-8 text-indigo-400" />
                     </div>
-
-                    {/* Tabs */}
-                    <div
-                      className={`px-6 pt-4 pb-0 border-b ${isDark ? "border-white/5" : "border-gray-100"}`}
-                    >
-                      <div className="flex gap-1 overflow-x-auto no-scrollbar">
-                        {tabsConfig.map((tab) => {
-                          const Icon = tab.icon;
-                          const isActive = activeTab === tab.id;
-                          return (
-                            <button
-                              key={tab.id}
-                              onClick={() => setActiveTab(tab.id)}
-                              className={`shrink-0 flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-t-lg transition-all duration-200 border-b-2 -mb-px ${
-                                isActive
-                                  ? "text-indigo-400 border-indigo-500 bg-indigo-500/5"
-                                  : `border-transparent ${t.subtext(isDark)} hover:${t.heading(isDark)} ${isDark ? "hover:bg-white/5" : "hover:bg-gray-50"}`
-                              }`}
-                            >
-                              <Icon className="w-4 h-4" />
-                              <span>{tab.label}</span>
-                            </button>
-                          );
-                        })}
-                      </div>
+                    <div className="text-center">
+                      <p
+                        className={`text-base font-bold mb-1 ${t.heading(isDark)}`}
+                      >
+                        Choose your branch & semester
+                      </p>
+                      <p className={`text-sm ${t.muted(isDark)}`}>
+                        Use the sidebar to get started
+                      </p>
                     </div>
-
-                    {/* Tab content */}
-                    <div className="p-5 md:p-6">
-                      {/* ── Syllabus ── */}
-                      {activeTab === "syllabus" && (
-                        <div className="flex flex-col gap-2.5">
-                          {Object.entries(selectedSubject.syllabus || {}).map(
-                            ([unit, content], idx) => (
-                              <div
-                                key={unit}
-                                className={`rounded-xl overflow-hidden border transition-all duration-200 ${
-                                  isDark
-                                    ? "border-white/8 hover:border-indigo-500/30"
-                                    : "border-gray-200 hover:border-indigo-300"
-                                }`}
-                              >
-                                <button
-                                  onClick={() => toggleUnit(idx)}
-                                  className={`flex justify-between items-center w-full px-5 py-3.5 text-left text-sm font-semibold transition-colors ${
-                                    openUnits.includes(idx)
-                                      ? isDark
-                                        ? "bg-indigo-500/5 text-indigo-300"
-                                        : "bg-indigo-50 text-indigo-700"
-                                      : `${t.heading(isDark)} ${isDark ? "hover:bg-white/5" : "hover:bg-gray-50"}`
-                                  }`}
-                                >
-                                  <span>{unit}</span>
-                                  <ChevronDown
-                                    className={`w-4 h-4 text-indigo-400 transition-transform duration-200 ${
-                                      openUnits.includes(idx)
-                                        ? "rotate-180"
-                                        : ""
-                                    }`}
-                                  />
-                                </button>
-                                {openUnits.includes(idx) && (
-                                  <div
-                                    className={`px-5 py-4 text-sm leading-relaxed border-t ${
-                                      isDark
-                                        ? "border-white/5 text-gray-300 bg-white/[0.02]"
-                                        : "border-gray-100 text-gray-600 bg-gray-50/50"
-                                    }`}
-                                  >
-                                    {content as string}
-                                  </div>
-                                )}
-                              </div>
-                            ),
-                          )}
-                        </div>
-                      )}
-
-                      {/* ── Lab ── */}
-                      {activeTab === "lab" &&
-                        selectedSubject.lab &&
-                        Object.keys(selectedSubject.lab).length > 0 && (
-                          <div className="flex flex-col gap-3">
-                            {Object.entries(selectedSubject.lab).map(
-                              ([exp, details]) => (
-                                <div
-                                  key={exp}
-                                  className={`rounded-xl p-4 border ${
-                                    isDark
-                                      ? "bg-white/[0.02] border-white/8"
-                                      : "bg-white border-gray-200"
-                                  }`}
-                                >
-                                  <div className="flex items-start gap-3">
-                                    <div className="w-7 h-7 rounded-lg bg-indigo-500/10 flex items-center justify-center shrink-0 mt-0.5">
-                                      <FlaskRound className="w-3.5 h-3.5 text-indigo-400" />
-                                    </div>
-                                    <div>
-                                      <p
-                                        className={`font-semibold text-sm mb-1 ${t.heading(isDark)}`}
-                                      >
-                                        {capitalize(exp)}
-                                      </p>
-                                      <p
-                                        className={`text-sm leading-relaxed ${t.subtext(isDark)}`}
-                                      >
-                                        {details as string}
-                                      </p>
-                                    </div>
-                                  </div>
-                                </div>
-                              ),
-                            )}
-                          </div>
-                        )}
-
-                      {/* ── Questions ── */}
-
-                      {activeTab === "questions" && (
-                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                          {selectedSubject.questions?.length ? (
-                            selectedSubject.questions.map((q: any) => (
-                              <a
-                                key={q._id || q.title}
-                                href={q.pdfUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className={`group flex flex-col gap-3 p-4 rounded-xl border transition-all duration-200 hover:border-indigo-500/40 hover:scale-[1.02] ${
-                                  isDark
-                                    ? "bg-white/[0.02] border-white/8 hover:bg-indigo-500/5"
-                                    : "bg-white border-gray-200 hover:bg-indigo-50/50 hover:shadow-sm"
-                                }`}
-                              >
-                                <div className="w-9 h-9 rounded-lg bg-indigo-500/10 flex items-center justify-center shrink-0">
-                                  <FileText className="w-4 h-4 text-indigo-400" />
-                                </div>
-                                <span
-                                  className={`text-sm font-medium leading-snug flex-1 ${t.heading(isDark)}`}
-                                >
-                                  {q.title}
-                                </span>
-                                {(q.views != null || q.downloads != null) && (
-                                  <div
-                                    className={`flex items-center gap-3 text-xs ${t.muted(isDark)}`}
-                                  >
-                                    {q.views != null && (
-                                      <span className="flex items-center gap-1">
-                                        <Eye className="w-3 h-3" />
-                                        {q.views}
-                                      </span>
-                                    )}
-                                    {q.downloads != null && (
-                                      <span className="flex items-center gap-1">
-                                        <Download className="w-3 h-3" />
-                                        {q.downloads}
-                                      </span>
-                                    )}
-                                  </div>
-                                )}
-                              </a>
-                            ))
-                          ) : (
-                            <div className="col-span-full">
-                              <EmptyState
-                                icon={FileText}
-                                label="No question papers yet."
-                                isDark={isDark}
-                              />
-                            </div>
-                          )}
-                        </div>
-                      )}
-                      {/* ── Videos ── */}
-                      {activeTab === "videos" && (
-                        <div>
-                          {selectedSubject.videos?.length ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                              {selectedSubject.videos.map((v: any) => {
-                                const thumb = getYoutubeThumbnail(v.url);
-                                return (
-                                  <a
-                                    key={v._id || v.title}
-                                    href={v.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className={`group rounded-xl overflow-hidden border transition-all duration-200 hover:scale-[1.02] hover:border-indigo-500/40 hover:shadow-lg hover:shadow-indigo-500/10 ${
-                                      isDark
-                                        ? "bg-white/[0.02] border-white/8"
-                                        : "bg-white border-gray-200"
-                                    }`}
-                                  >
-                                    {thumb ? (
-                                      <div className="relative overflow-hidden">
-                                        <img
-                                          src={thumb}
-                                          alt={v.title}
-                                          className="w-full h-36 object-cover transition-transform duration-300 group-hover:scale-105"
-                                        />
-                                        {/* Play overlay */}
-                                        <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
-                                          <div className="w-11 h-11 rounded-full bg-white/90 flex items-center justify-center">
-                                            <Play className="w-5 h-5 text-indigo-600 ml-0.5" />
-                                          </div>
-                                        </div>
-                                      </div>
-                                    ) : (
-                                      <div
-                                        className={`w-full h-36 flex items-center justify-center ${
-                                          isDark ? "bg-white/5" : "bg-gray-100"
-                                        }`}
-                                      >
-                                        <Video
-                                          className={`w-10 h-10 ${t.muted(isDark)}`}
-                                        />
-                                      </div>
-                                    )}
-                                    <div className="p-3.5">
-                                      <p
-                                        className={`text-sm font-semibold text-center leading-snug ${t.heading(isDark)}`}
-                                      >
-                                        {capitalize(v.title)}
-                                      </p>
-                                    </div>
-                                  </a>
-                                );
-                              })}
-                            </div>
-                          ) : (
-                            <EmptyState
-                              icon={Video}
-                              label="No videos added yet."
-                              isDark={isDark}
-                            />
-                          )}
-                        </div>
-                      )}
+                    {/* Animated arrow on mobile pointing to FAB */}
+                    <div className="lg:hidden flex items-center gap-2 mt-2">
+                      <Sparkles className="w-4 h-4 text-indigo-400" />
+                      <span
+                        className={`text-xs font-medium ${t.subtext(isDark)}`}
+                      >
+                        Tap the button at the bottom-right
+                      </span>
                     </div>
                   </div>
                 ) : (
-                  /* Empty state when no subject selected */
-                  <div
-                    className={`rounded-2xl border flex-1 flex flex-col items-center justify-center py-24 ${t.card(isDark)}`}
-                  >
-                    <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 flex items-center justify-center mb-4">
-                      <Layers className="w-7 h-7 text-indigo-400" />
-                    </div>
-                    <p
-                      className={`text-base font-semibold mb-1 ${t.heading(isDark)}`}
+                  <>
+                    {/* Subject pills — horizontal scroll */}
+                    <div
+                      ref={dragScrollRef}
+                      onMouseDown={handleMouseDown}
+                      onMouseLeave={stopDrag}
+                      onMouseUp={stopDrag}
+                      onMouseMove={handleMouseMove}
+                      className={`rounded-2xl p-4 border overflow-x-auto no-scrollbar cursor-grab select-none ${t.card(isDark)}`}
                     >
-                      No subject selected
-                    </p>
-                    <p className={`text-sm ${t.muted(isDark)}`}>
-                      Pick a branch, semester, and subject to get started
-                    </p>
-                  </div>
+                      {filteredSubjects.length === 0 ? (
+                        <p
+                          className={`text-sm text-center py-1 ${t.muted(isDark)}`}
+                        >
+                          No subjects found for this selection.
+                        </p>
+                      ) : (
+                        <div className="flex gap-2.5 flex-nowrap">
+                          {filteredSubjects.map((subj) => (
+                            <button
+                              key={subj._id}
+                              onClick={() => {
+                                setSelectedSubject(subj);
+                                setActiveTab("syllabus");
+                                setOpenUnits([]);
+                                localStorage.setItem(
+                                  "selectedSubjectName",
+                                  subj.name,
+                                );
+                                window.dispatchEvent(
+                                  new Event("subject-selection"),
+                                );
+                                setSidebarOpen(false);
+                              }}
+                              className={`shrink-0 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
+                                selectedSubject?._id === subj._id
+                                  ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/20 scale-105"
+                                  : t.ghostBtn(isDark)
+                              }`}
+                            >
+                              {capitalize(subj.name)}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Main content area */}
+                    {selectedSubject ? (
+                      <div
+                        className={`rounded-2xl border flex-1 animate-slideUp overflow-hidden ${t.card(isDark)}`}
+                      >
+                        {/* Subject header */}
+                        <div
+                          className={`px-6 py-5 border-b ${isDark ? "border-white/5" : "border-gray-100"}`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shrink-0 shadow-md shadow-indigo-500/20">
+                              <Layers className="w-5 h-5 text-white" />
+                            </div>
+                            <div>
+                              <h1
+                                className={`text-lg font-bold ${t.heading(isDark)}`}
+                              >
+                                {capitalize(selectedSubject.name)}
+                              </h1>
+                              <p className={`text-xs ${t.muted(isDark)}`}>
+                                {selectedBranch} &nbsp;·&nbsp; Semester{" "}
+                                {selectedSem}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Tabs */}
+                        <div
+                          className={`px-6 pt-4 pb-0 border-b ${isDark ? "border-white/5" : "border-gray-100"}`}
+                        >
+                          <div className="flex gap-1 overflow-x-auto no-scrollbar">
+                            {tabsConfig.map((tab) => {
+                              const Icon = tab.icon;
+                              const isActive = activeTab === tab.id;
+                              return (
+                                <button
+                                  key={tab.id}
+                                  onClick={() => setActiveTab(tab.id)}
+                                  className={`shrink-0 flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-t-lg transition-all duration-200 border-b-2 -mb-px ${
+                                    isActive
+                                      ? "text-indigo-400 border-indigo-500 bg-indigo-500/5"
+                                      : `border-transparent ${t.subtext(isDark)} hover:${t.heading(isDark)} ${isDark ? "hover:bg-white/5" : "hover:bg-gray-50"}`
+                                  }`}
+                                >
+                                  <Icon className="w-4 h-4" />
+                                  <span>{tab.label}</span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                        {/* Tab content */}
+                        <div className="p-5 md:p-6">
+                          {/* ── Syllabus ── */}
+                          {activeTab === "syllabus" && (
+                            <div className="flex flex-col gap-2.5">
+                              {Object.entries(
+                                selectedSubject.syllabus || {},
+                              ).map(([unit, content], idx) => (
+                                <div
+                                  key={unit}
+                                  className={`rounded-xl overflow-hidden border transition-all duration-200 ${
+                                    isDark
+                                      ? "border-white/8 hover:border-indigo-500/30"
+                                      : "border-gray-200 hover:border-indigo-300"
+                                  }`}
+                                >
+                                  <button
+                                    onClick={() => toggleUnit(idx)}
+                                    className={`flex justify-between items-center w-full px-5 py-3.5 text-left text-sm font-semibold transition-colors ${
+                                      openUnits.includes(idx)
+                                        ? isDark
+                                          ? "bg-indigo-500/5 text-indigo-300"
+                                          : "bg-indigo-50 text-indigo-700"
+                                        : `${t.heading(isDark)} ${isDark ? "hover:bg-white/5" : "hover:bg-gray-50"}`
+                                    }`}
+                                  >
+                                    <span>{unit}</span>
+                                    <ChevronDown
+                                      className={`w-4 h-4 text-indigo-400 transition-transform duration-200 ${
+                                        openUnits.includes(idx)
+                                          ? "rotate-180"
+                                          : ""
+                                      }`}
+                                    />
+                                  </button>
+                                  {openUnits.includes(idx) && (
+                                    <div
+                                      className={`px-5 py-4 text-sm leading-relaxed border-t ${
+                                        isDark
+                                          ? "border-white/5 text-gray-300 bg-white/[0.02]"
+                                          : "border-gray-100 text-gray-600 bg-gray-50/50"
+                                      }`}
+                                    >
+                                      {content as string}
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+
+                          {/* ── Lab ── */}
+                          {activeTab === "lab" &&
+                            selectedSubject.lab &&
+                            Object.keys(selectedSubject.lab).length > 0 && (
+                              <div className="flex flex-col gap-3">
+                                {Object.entries(selectedSubject.lab).map(
+                                  ([exp, details]) => (
+                                    <div
+                                      key={exp}
+                                      className={`rounded-xl p-4 border ${
+                                        isDark
+                                          ? "bg-white/[0.02] border-white/8"
+                                          : "bg-white border-gray-200"
+                                      }`}
+                                    >
+                                      <div className="flex items-start gap-3">
+                                        <div className="w-7 h-7 rounded-lg bg-indigo-500/10 flex items-center justify-center shrink-0 mt-0.5">
+                                          <FlaskRound className="w-3.5 h-3.5 text-indigo-400" />
+                                        </div>
+                                        <div>
+                                          <p
+                                            className={`font-semibold text-sm mb-1 ${t.heading(isDark)}`}
+                                          >
+                                            {capitalize(exp)}
+                                          </p>
+                                          <p
+                                            className={`text-sm leading-relaxed ${t.subtext(isDark)}`}
+                                          >
+                                            {details as string}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  ),
+                                )}
+                              </div>
+                            )}
+
+                          {/* ── Questions ── */}
+                          {activeTab === "questions" && (
+                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                              {selectedSubject.questions?.length ? (
+                                selectedSubject.questions.map((q: any) => (
+                                  <a
+                                    key={q._id || q.title}
+                                    href={q.pdfUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`group flex flex-col gap-3 p-4 rounded-xl border transition-all duration-200 hover:border-indigo-500/40 hover:scale-[1.02] ${
+                                      isDark
+                                        ? "bg-white/[0.02] border-white/8 hover:bg-indigo-500/5"
+                                        : "bg-white border-gray-200 hover:bg-indigo-50/50 hover:shadow-sm"
+                                    }`}
+                                  >
+                                    <div className="w-9 h-9 rounded-lg bg-indigo-500/10 flex items-center justify-center shrink-0">
+                                      <FileText className="w-4 h-4 text-indigo-400" />
+                                    </div>
+                                    <span
+                                      className={`text-sm font-medium leading-snug flex-1 ${t.heading(isDark)}`}
+                                    >
+                                      {q.title}
+                                    </span>
+                                    {(q.views != null ||
+                                      q.downloads != null) && (
+                                      <div
+                                        className={`flex items-center gap-3 text-xs ${t.muted(isDark)}`}
+                                      >
+                                        {q.views != null && (
+                                          <span className="flex items-center gap-1">
+                                            <Eye className="w-3 h-3" />{" "}
+                                            {q.views}
+                                          </span>
+                                        )}
+                                        {q.downloads != null && (
+                                          <span className="flex items-center gap-1">
+                                            <Download className="w-3 h-3" />{" "}
+                                            {q.downloads}
+                                          </span>
+                                        )}
+                                      </div>
+                                    )}
+                                  </a>
+                                ))
+                              ) : (
+                                <div className="col-span-full">
+                                  <EmptyState
+                                    icon={FileText}
+                                    label="No question papers yet."
+                                    isDark={isDark}
+                                  />
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* ── Videos ── */}
+                          {activeTab === "videos" && (
+                            <div>
+                              {selectedSubject.videos?.length ? (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                  {selectedSubject.videos.map((v: any) => {
+                                    const thumb = getYoutubeThumbnail(v.url);
+                                    return (
+                                      <a
+                                        key={v._id || v.title}
+                                        href={v.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={`group rounded-xl overflow-hidden border transition-all duration-200 hover:scale-[1.02] hover:border-indigo-500/40 hover:shadow-lg hover:shadow-indigo-500/10 ${
+                                          isDark
+                                            ? "bg-white/[0.02] border-white/8"
+                                            : "bg-white border-gray-200"
+                                        }`}
+                                      >
+                                        {thumb ? (
+                                          <div className="relative overflow-hidden">
+                                            <img
+                                              src={thumb}
+                                              alt={v.title}
+                                              className="w-full h-36 object-cover transition-transform duration-300 group-hover:scale-105"
+                                            />
+                                            <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+                                              <div className="w-11 h-11 rounded-full bg-white/90 flex items-center justify-center">
+                                                <Play className="w-5 h-5 text-indigo-600 ml-0.5" />
+                                              </div>
+                                            </div>
+                                          </div>
+                                        ) : (
+                                          <div
+                                            className={`w-full h-36 flex items-center justify-center ${isDark ? "bg-white/5" : "bg-gray-100"}`}
+                                          >
+                                            <Video
+                                              className={`w-10 h-10 ${t.muted(isDark)}`}
+                                            />
+                                          </div>
+                                        )}
+                                        <div className="p-3.5">
+                                          <p
+                                            className={`text-sm font-semibold text-center leading-snug ${t.heading(isDark)}`}
+                                          >
+                                            {capitalize(v.title)}
+                                          </p>
+                                        </div>
+                                      </a>
+                                    );
+                                  })}
+                                </div>
+                              ) : (
+                                <EmptyState
+                                  icon={Video}
+                                  label="No videos added yet."
+                                  isDark={isDark}
+                                />
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ) : null}
+                  </>
                 )}
               </div>
             </div>
@@ -815,27 +881,6 @@ export default function SubjectPage() {
           scrollbar-width: none;
         }
       `}</style>
-    </div>
-  );
-}
-
-// ── Empty state helper ────────────────────────────────────────────────────────
-
-function EmptyState({
-  icon: Icon,
-  label,
-  isDark,
-}: {
-  icon: React.ElementType;
-  label: string;
-  isDark: boolean;
-}) {
-  return (
-    <div className="flex flex-col items-center justify-center py-16 gap-3">
-      <div className="w-11 h-11 rounded-xl bg-indigo-500/10 flex items-center justify-center">
-        <Icon className="w-5 h-5 text-indigo-400" />
-      </div>
-      <p className={`text-sm ${t.muted(isDark)}`}>{label}</p>
     </div>
   );
 }

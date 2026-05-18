@@ -107,8 +107,6 @@ const Hero = () => {
 
   return (
     <div className={`${isDark ? "bg-[#0a0d1a]" : "bg-gray-50"}`}>
-      
-
       {/* SECTION2*/}
       <div
         id="features-section"
@@ -205,7 +203,6 @@ const Hero = () => {
                 </div>
               </div>
 
-             
               <div className="mb-5">
                 <label
                   className={`block text-xs font-semibold mb-2.5 ${isDark ? "text-gray-300" : "text-gray-700"}`}
