@@ -18,10 +18,9 @@ export async function connectDB() {
     console.log("🔹 Connecting to DB...");
 
     await mongoose.connect(uri, {
-      dbName: "datafor10gpa",
-      serverSelectionTimeoutMS: 10000, // 10 seconds
+      serverSelectionTimeoutMS: 10000,
       connectTimeoutMS: 10000,
-      tls: true, // replaces old "ssl" option
+      tls: true,
     });
 
     isConnected = true;
