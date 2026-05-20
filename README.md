@@ -231,9 +231,6 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 
 <div align="center">
   <p>
-    <strong>Developed by students, for students</strong>
-  </p>
-  <p>
     <a href="https://www.10gpa.in/">Website</a> •
     <a href="https://github.com/codetillsleep/notesapp2.0">GitHub Repository</a>
   </p>
