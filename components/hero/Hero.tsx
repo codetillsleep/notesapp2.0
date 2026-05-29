@@ -252,8 +252,6 @@ const Hero = () => {
                   ))}
                 </div>
               </div>
-
-              {/* CTA */}
               <button
                 onClick={handleSubmit}
                 disabled={!selectedSem || !selectedBranch}
