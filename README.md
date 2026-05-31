@@ -33,7 +33,7 @@
 
 ### Key Features
 
-- **Complete Syllabus Coverage** - Comprehensive coverage of all topics organized by semester and subject
+- **Complete Syllabus Coverage** - Comprehensive coverage of all topics organized by semester and subject.
 - **Video Library** - Curated collection of expert lectures and tutorials from verified sources.
 - **Question Banks** - Extensive collection of practice questions aligned with university exam patterns.
 - **Mock Tests** - Full-length practice tests simulating real exam conditions.
