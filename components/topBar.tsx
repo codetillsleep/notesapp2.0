@@ -4,32 +4,22 @@ import { Search, Github, Sun, Moon, Menu, X, User, BookOpen } from "lucide-react
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { NAV_LINKS, GITHUB_URL, SITE_TITLE } from "../app/constants/constants";
+import { useSubjects } from "../hooks/useSubjects";
 
 const TopBar = () => {
   const [isDark, setIsDark] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState<any[]>([]);
-  const [subjects, setSubjects] = useState<any[]>([]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const mobileSearchRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const pathname = usePathname();
+  // Shared cache — same request as SubjectPage
+  const { subjects } = useSubjects();
 
-  useEffect(() => {
-    const loadSubjects = async () => {
-      try {
-        const res = await fetch("/api/subjects", { cache: "no-store" });
-        if (!res.ok) throw new Error("Failed to fetch subjects");
-        const data = await res.json();
-        setSubjects(data || []);
-      } catch (err) {
-        console.error("❌ Error loading subjects:", err);
-      }
-    };
-    loadSubjects();
-  }, []);
+
 
   // Track scroll for nav shadow
   useEffect(() => {
@@ -81,13 +71,17 @@ const TopBar = () => {
       setSuggestions([]);
       return;
     }
-    const query = searchQuery.toLowerCase().replace(/\s+/g, "");
+    const query = searchQuery.trim().toLowerCase();
+    const cleanQuery = query.replace(/\s+/g, "");
     const matches = subjects
       .filter((s) => {
-        const name = s.name?.toLowerCase().replace(/\s+/g, "") || "";
+        const name = (s.name || "").toLowerCase();
+        const cleanName = name.replace(/\s+/g, "");
+        const code = (s.code || "").toLowerCase();
         return (
-          name.includes(query) ||
-          query.split("").every((char: string) => name.includes(char))
+          cleanName.includes(cleanQuery) ||
+          code.includes(query) ||
+          name.split(" ").some((word: string) => word.startsWith(query))
         );
       })
       .slice(0, 6);
@@ -117,10 +111,12 @@ const TopBar = () => {
   };
 
   const getLinkHref = (item: string) => {
-    if (item.toLowerCase() === "home") return "/";
-    if (item.toLowerCase() === "about") return "/about";
-    if (item.toLowerCase() === "dev logs") return "/devlogs";
-    return `/${item.toLowerCase()}`;
+    const key = item.toLowerCase();
+    if (key === "home") return "/";
+    if (key === "about") return "/about";
+    if (key === "dev logs") return "/devlogs";
+    if (key === "subjects" || key === "subject") return "/subject?view=catalog";
+    return `/${key}`;
   };
 
   const isActiveLink = (item: string) => {
@@ -211,6 +207,11 @@ const TopBar = () => {
                     <Link
                       key={item}
                       href={getLinkHref(item)}
+                      onClick={() => {
+                        if (item.toLowerCase().includes("subject")) {
+                          window.dispatchEvent(new Event("open-catalog"));
+                        }
+                      }}
                       className={`relative px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                         active
                           ? isDark
@@ -403,7 +404,12 @@ const TopBar = () => {
                   <Link
                     key={item}
                     href={getLinkHref(item)}
-                    onClick={() => setMobileMenuOpen(false)}
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      if (item.toLowerCase().includes("subject")) {
+                        window.dispatchEvent(new Event("open-catalog"));
+                      }
+                    }}
                     className={`px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 flex items-center justify-between ${
                       active
                         ? isDark

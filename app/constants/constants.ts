@@ -1,5 +1,5 @@
 // app/constant/constants.ts
-export const NAV_LINKS = [];
+export const NAV_LINKS = ["Home", "Subjects", "Dev Logs", "About"];
 
 export const GITHUB_URL = "https://github.com/codetillsleep";
 
@@ -21,7 +21,7 @@ export const DATESHEET_DATA = [
     branch: "CSAM",
     sem1: [
       { subject: "Manufacturing Process", date: "2025-12-15" },
-      { subject: "programmin in C / Applied Chemistry", date: "2025-12-17" },
+      { subject: "Programming in C / Applied Chemistry", date: "2025-12-17" },
       { subject: "Applied Physics - I", date: "2025-12-19" },
       { subject: "Electrical Science", date: "2025-12-22" },
       { subject: "Applied Mathematics", date: "2025-12-24" },
@@ -39,7 +39,7 @@ export const DATESHEET_DATA = [
     branch: "CYBER",
     sem1: [
       { subject: "Manufacturing Process", date: "2025-12-15" },
-      { subject: "programmin in C / Applied Chemistry", date: "2025-12-17" },
+      { subject: "Programming in C / Applied Chemistry", date: "2025-12-17" },
       { subject: "Applied Physics - I", date: "2025-12-19" },
       { subject: "Electrical Science", date: "2025-12-22" },
       { subject: "Applied Mathematics", date: "2025-12-24" },

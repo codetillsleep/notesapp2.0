@@ -14,11 +14,18 @@ import {
   Eye,
   Download,
   Sparkles,
+  Bot,
+  Wand2,
+  Zap,
 } from "lucide-react";
 import Loader from "@/components/Loader";
 import TopBar from "@/components/topBar";
 import { useTheme } from "@/hooks/useTheme";
 import { t } from "@/lib/theme";
+import { useSubjects } from "@/hooks/useSubjects";
+import Chatbot from "@/components/Chatbot";
+import QuizPanel from "@/components/QuizPanel";
+import SubjectCatalog from "@/components/SubjectCatalog";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -88,14 +95,31 @@ export default function SubjectPage() {
 
   const [openUnits, setOpenUnits] = useState<number[]>([]);
   const [activeTab, setActiveTab] = useState("syllabus");
-  const [subjects, setSubjects] = useState<any[]>([]);
   const [selectedBranch, setSelectedBranch] = useState<string | null>(null);
   const [selectedSem, setSelectedSem] = useState<number | null>(null);
   const [selectedSubject, setSelectedSubject] = useState<any | null>(null);
-  const [loading, setLoading] = useState(true);
   const [semesterOpen, setSemesterOpen] = useState(false);
   const [branchOpen, setBranchOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showCatalog, setShowCatalog] = useState(false);
+  // AI feature panels
+  const [chatbotOpen, setChatbotOpen] = useState(false);
+  const [quizOpen, setQuizOpen] = useState(false);
+
+  // — Shared module-level cache (replaces the raw fetch + useState)
+  const { subjects, loading, fromCache } = useSubjects();
+
+  const handleSelectFromCatalog = (subj: any, branch: string, sem: number) => {
+    setSelectedBranch(branch);
+    setSelectedSem(sem);
+    setSelectedSubject(subj);
+    localStorage.setItem("selectedBranch", branch);
+    localStorage.setItem("selectedSem", String(sem));
+    localStorage.setItem("selectedSubjectName", subj.name);
+    setShowCatalog(false);
+    setSidebarOpen(false);
+  };
+
 
   // Drag-to-scroll for subject pills
   const dragScrollRef = useRef<HTMLDivElement>(null);
@@ -121,22 +145,6 @@ export default function SubjectPage() {
       drag.current.scrollLeft - (x - drag.current.startX) * 2;
   };
 
-  // Load subjects
-  useEffect(() => {
-    const load = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch("/api/subjects", { cache: "no-store" });
-        const data = await res.json();
-        setSubjects(data || []);
-      } catch (err) {
-        console.error("❌ Error loading subjects:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
-  }, []);
 
   // Auto-select first subject when branch+sem is set and subjects are loaded
   const autoSelectFirst = (
@@ -179,9 +187,34 @@ export default function SubjectPage() {
   }, [subjects]);
 
   useEffect(() => {
-    window.addEventListener("subject-selection", () => applySelection());
-    return () =>
-      window.removeEventListener("subject-selection", () => applySelection());
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const view = params.get("view");
+      const from = params.get("from");
+      if (view === "catalog") {
+        setShowCatalog(true);
+      } else if (from === "home") {
+        setShowCatalog(false);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleSelection = () => {
+      applySelection(subjects);
+      setShowCatalog(false);
+    };
+    const handleOpenCatalog = () => {
+      setShowCatalog(true);
+    };
+
+    window.addEventListener("subject-selection", handleSelection);
+    window.addEventListener("open-catalog", handleOpenCatalog);
+
+    return () => {
+      window.removeEventListener("subject-selection", handleSelection);
+      window.removeEventListener("open-catalog", handleOpenCatalog);
+    };
   }, [subjects]);
 
   const toggleUnit = (idx: number) =>
@@ -235,10 +268,21 @@ export default function SubjectPage() {
       {/* Mobile sidebar FAB */}
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="lg:hidden fixed bottom-6 right-6 z-50 w-13 h-13 p-3.5 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-xl shadow-indigo-500/30 transition-transform hover:scale-105"
+        className="lg:hidden fixed bottom-6 right-20 z-50 w-13 h-13 p-3.5 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-xl shadow-indigo-500/30 transition-transform hover:scale-105"
       >
         {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
       </button>
+
+      {/* Mobile chatbot FAB */}
+      {selectedSubject && (
+        <button
+          onClick={() => setChatbotOpen(true)}
+          className="lg:hidden fixed bottom-6 right-6 z-50 w-13 h-13 p-3.5 rounded-2xl bg-gradient-to-br from-violet-500 to-pink-500 text-white shadow-xl shadow-violet-500/30 transition-transform hover:scale-105"
+          title="Ask AI"
+        >
+          <Bot className="w-5 h-5" />
+        </button>
+      )}
 
       <div className="relative z-10 pt-20 px-4 md:px-6 lg:px-8 pb-10">
         {loading ? (
@@ -499,69 +543,60 @@ export default function SubjectPage() {
                   RIGHT PANEL
               ══════════════════════════════════════════════════ */}
               <div className="flex-1 min-w-0 flex flex-col gap-4">
-                {/* ── No branch/sem selected prompt ── */}
-                {!selectedBranch || !selectedSem ? (
-                  <div
-                    className={`rounded-2xl border flex-1 flex flex-col items-center justify-center py-24 gap-5 ${t.card(isDark)}`}
-                  >
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center">
-                      <GraduationCap className="w-8 h-8 text-indigo-400" />
-                    </div>
-                    <div className="text-center">
-                      <p
-                        className={`text-base font-bold mb-1 ${t.heading(isDark)}`}
-                      >
-                        Choose your branch & semester
-                      </p>
-                      <p className={`text-sm ${t.muted(isDark)}`}>
-                        Use the sidebar to get started
-                      </p>
-                    </div>
-                    {/* Animated arrow on mobile pointing to FAB */}
-                    <div className="lg:hidden flex items-center gap-2 mt-2">
-                      <Sparkles className="w-4 h-4 text-indigo-400" />
-                      <span
-                        className={`text-xs font-medium ${t.subtext(isDark)}`}
-                      >
-                        Tap the button at the bottom-right
-                      </span>
-                    </div>
-                  </div>
+                {/* ── Catalog mode or No subject selected ── */}
+                {showCatalog || !selectedBranch || !selectedSem || !selectedSubject ? (
+                  <SubjectCatalog
+                    subjects={subjects}
+                    onSelectSubject={handleSelectFromCatalog}
+                  />
                 ) : (
                   <>
                     {/* Subject pills — horizontal scroll */}
-                    <div
-                      ref={dragScrollRef}
-                      onMouseDown={handleMouseDown}
-                      onMouseLeave={stopDrag}
-                      onMouseUp={stopDrag}
-                      onMouseMove={handleMouseMove}
-                      className={`rounded-2xl p-4 border overflow-x-auto no-scrollbar cursor-grab select-none ${t.card(isDark)}`}
-                    >
-                      {filteredSubjects.length === 0 ? (
-                        <p
-                          className={`text-sm text-center py-1 ${t.muted(isDark)}`}
-                        >
-                          No subjects found for this selection.
-                        </p>
-                      ) : (
-                        <div className="flex gap-2.5 flex-nowrap">
-                          {filteredSubjects.map((subj) => (
-                            <button
-                              key={subj._id}
-                              onClick={() => {
-                                setSelectedSubject(subj);
-                                setActiveTab("syllabus");
-                                setOpenUnits([]);
-                                localStorage.setItem(
-                                  "selectedSubjectName",
-                                  subj.name,
-                                );
-                                window.dispatchEvent(
-                                  new Event("subject-selection"),
-                                );
-                                setSidebarOpen(false);
-                              }}
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setShowCatalog(true)}
+                        className={`shrink-0 px-3.5 py-2.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 ${
+                          isDark
+                            ? "bg-indigo-500/10 border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/20"
+                            : "bg-indigo-50 border-indigo-200 text-indigo-700 hover:bg-indigo-100"
+                        }`}
+                        title="View all subjects in directory"
+                      >
+                        <Layers className="w-3.5 h-3.5" /> All Subjects
+                      </button>
+
+                      <div
+                        ref={dragScrollRef}
+                        onMouseDown={handleMouseDown}
+                        onMouseLeave={stopDrag}
+                        onMouseUp={stopDrag}
+                        onMouseMove={handleMouseMove}
+                        className={`flex-1 rounded-2xl p-4 border overflow-x-auto no-scrollbar cursor-grab select-none ${t.card(isDark)}`}
+                      >
+                        {filteredSubjects.length === 0 ? (
+                          <p
+                            className={`text-sm text-center py-1 ${t.muted(isDark)}`}
+                          >
+                            No subjects found for this selection.
+                          </p>
+                        ) : (
+                          <div className="flex gap-2.5 flex-nowrap">
+                            {filteredSubjects.map((subj) => (
+                              <button
+                                key={subj._id}
+                                onClick={() => {
+                                  setSelectedSubject(subj);
+                                  setActiveTab("syllabus");
+                                  setOpenUnits([]);
+                                  localStorage.setItem(
+                                    "selectedSubjectName",
+                                    subj.name,
+                                  );
+                                  window.dispatchEvent(
+                                    new Event("subject-selection"),
+                                  );
+                                  setSidebarOpen(false);
+                                }}
                               className={`shrink-0 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
                                 selectedSubject?._id === subj._id
                                   ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/20 scale-105"
@@ -574,6 +609,7 @@ export default function SubjectPage() {
                         </div>
                       )}
                     </div>
+                  </div>
 
                     {/* Main content area */}
                     {selectedSubject ? (
@@ -584,20 +620,52 @@ export default function SubjectPage() {
                         <div
                           className={`px-6 py-5 border-b ${isDark ? "border-white/5" : "border-gray-100"}`}
                         >
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shrink-0 shadow-md shadow-indigo-500/20">
-                              <Layers className="w-5 h-5 text-white" />
+                          <div className="flex items-center justify-between gap-3 flex-wrap">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shrink-0 shadow-md shadow-indigo-500/20">
+                                <Layers className="w-5 h-5 text-white" />
+                              </div>
+                              <div>
+                                <h1
+                                  className={`text-lg font-bold ${t.heading(isDark)}`}
+                                >
+                                  {capitalize(selectedSubject.name)}
+                                </h1>
+                                <p className={`text-xs ${t.muted(isDark)}`}>
+                                  {selectedBranch} &nbsp;·&nbsp; Semester{" "}
+                                  {selectedSem}
+                                  {fromCache && (
+                                    <span className={`ml-2 inline-flex items-center gap-0.5 text-[10px] font-medium ${
+                                      isDark ? "text-emerald-400/60" : "text-emerald-600/60"
+                                    }`}>
+                                      <Zap className="w-2.5 h-2.5" /> cached
+                                    </span>
+                                  )}
+                                </p>
+                              </div>
                             </div>
-                            <div>
-                              <h1
-                                className={`text-lg font-bold ${t.heading(isDark)}`}
+                            {/* AI action buttons (desktop) */}
+                            <div className="hidden sm:flex items-center gap-2 shrink-0">
+                              <button
+                                onClick={() => setQuizOpen(true)}
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all hover:scale-105 ${
+                                  isDark
+                                    ? "border-violet-500/30 bg-violet-500/8 text-violet-300 hover:bg-violet-500/15"
+                                    : "border-violet-300 bg-violet-50 text-violet-700 hover:bg-violet-100"
+                                }`}
                               >
-                                {capitalize(selectedSubject.name)}
-                              </h1>
-                              <p className={`text-xs ${t.muted(isDark)}`}>
-                                {selectedBranch} &nbsp;·&nbsp; Semester{" "}
-                                {selectedSem}
-                              </p>
+                                <Wand2 className="w-3.5 h-3.5" /> Generate
+                              </button>
+                              <button
+                                onClick={() => setChatbotOpen(true)}
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all hover:scale-105 ${
+                                  isDark
+                                    ? "border-indigo-500/30 bg-indigo-500/8 text-indigo-300 hover:bg-indigo-500/15"
+                                    : "border-indigo-300 bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
+                                }`}
+                              >
+                                <Bot className="w-3.5 h-3.5" /> Ask AI
+                              </button>
                             </div>
                           </div>
                         </div>
@@ -845,42 +913,23 @@ export default function SubjectPage() {
           </div>
         )}
       </div>
-
-      <style jsx>{`
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(-8px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(16px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.25s ease-out;
-        }
-        .animate-slideUp {
-          animation: slideUp 0.3s ease-out;
-        }
-        .no-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-        .no-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}</style>
+      {/* AI Panels */}
+      {selectedSubject && (
+        <>
+          <Chatbot
+            isOpen={chatbotOpen}
+            onClose={() => setChatbotOpen(false)}
+            subjectId={selectedSubject._id}
+            subjectName={selectedSubject.name}
+          />
+          <QuizPanel
+            isOpen={quizOpen}
+            onClose={() => setQuizOpen(false)}
+            subjectId={selectedSubject._id}
+            subjectName={selectedSubject.name}
+          />
+        </>
+      )}
     </div>
   );
 }

@@ -207,7 +207,7 @@ const Hero = () => {
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
             <a
-              href="/subject"
+              href="/subject?view=catalog"
               className={`flex items-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-semibold border transition-all duration-200 hover:scale-105 ${
                 isDark
                   ? "border-white/10 text-gray-300 hover:bg-white/5 hover:border-white/20"
