@@ -33,12 +33,12 @@
 
 ### Key Features
 
-- **Complete Syllabus Coverage** - Comprehensive coverage of all topics organized by semester and subject
-- **Video Library** - Curated collection of expert lectures and tutorials from verified sources
-- **Question Banks** - Extensive collection of practice questions aligned with university exam patterns
-- **Mock Tests** - Full-length practice tests simulating real exam conditions
-- **Previous Year Papers** - Decade-long archive of solved previous year examination papers
-- **Branch-Specific Resources** - Dedicated materials for CSAM and CYBER specializations
+- **Complete Syllabus Coverage** - Comprehensive coverage of all topics organized by semester and subject.
+- **Video Library** - Curated collection of expert lectures and tutorials from verified sources.
+- **Question Banks** - Extensive collection of practice questions aligned with university exam patterns.
+- **Mock Tests** - Full-length practice tests simulating real exam conditions.
+- **Previous Year Papers** - Decade-long archive of solved previous year examination papers.
+- **Branch-Specific Resources** - Dedicated materials for CSAM and CYBER specializations.
 
 ---
 
@@ -61,7 +61,13 @@ While numerous educational resources exist for GGSIPU students, emerging branche
 ## Preview
 
 <div align="center">
-  <img width="100%" alt="10GPA Platform Interface" src="https://github.com/user-attachments/assets/c7dffd35-7170-4cf9-b8e1-a9cc1f46bba0" />
+  <img width="1893" height="899" alt="image" src="https://github.com/user-attachments/assets/4b62a12b-fff6-4f8f-b008-7ca09e415879" />
+
+  <img width="1901" height="889" alt="image" src="https://github.com/user-attachments/assets/4031d8b5-18bc-497d-9c45-4f313513e930" />
+
+  <img width="1883" height="886" alt="image" src="https://github.com/user-attachments/assets/65f07894-89ae-4906-b0c0-f23de318081f" />
+
+
   <p><em>Modern, intuitive interface designed for efficient learning</em></p>
 </div>
 
