@@ -1,18 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ThemeScript from "./theme-script";
-import TopBar from "@/components/topBar";
-import { SessionProvider } from "next-auth/react";
 import Footer from "@/components/Footer";
-
 import Providers from "./providers";
-
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "10GPA – GGSIPU B.Tech Study Materials, Syllabus & PYQs",
@@ -36,10 +26,9 @@ export const metadata: Metadata = {
       "10GPA provides free B.Tech study materials, notes, previous year questions, and resources to help you ace your exams.",
     url: "https://10gpa.in",
     siteName: "10GPA",
-
     images: [
       {
-        url: "https://10gpa.in/og-image.png", // Replace with your actual image URL
+        url: "https://10gpa.in/og-image.png",
         width: 1200,
         height: 630,
         alt: "10GPA Study Materials",
@@ -66,11 +55,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="...">
+      <body>
         <ThemeScript />
-
         <Providers>
-          <main className="">{children}</main>
+          <main>{children}</main>
+          <Footer />
         </Providers>
       </body>
     </html>

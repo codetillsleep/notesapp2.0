@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { ChevronRight, Lock, Mail, Github, Loader2, UserRound, Sparkles } from "lucide-react";
+import { ChevronRight, Lock, Mail, Github, Loader2, UserRound, BookOpen, Video, FileText, Clock, CheckCircle2 } from "lucide-react";
 const currentYear: number = new Date().getFullYear();
 
 export default function LoginPage() {
@@ -82,55 +82,89 @@ export default function LoginPage() {
       {/* ── Left Panel (decorative) ── */}
       <div className="hidden lg:flex lg:w-5/12 relative flex-col justify-between p-12 overflow-hidden">
         {/* Gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 via-violet-900 to-purple-900" />
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-950 via-violet-950 to-purple-950" />
 
-        {/* Noise texture overlay */}
+        {/* Animated mesh gradient */}
         <div
-          className="absolute inset-0 opacity-20"
+          className="absolute inset-0 opacity-30 animate-gradient-shift"
           style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")`,
+            background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #be185d 100%)",
+            backgroundSize: "200% 200%",
           }}
         />
 
-        {/* Grid pattern */}
+        {/* Dot grid */}
         <div
           className="absolute inset-0 opacity-10"
           style={{
-            backgroundImage: `linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(205, 19, 19, 0.3) 1px, transparent 1px)`,
-            backgroundSize: "48px 48px",
+            backgroundImage: `radial-gradient(circle at 1.5px 1.5px, rgba(255,255,255,0.6) 1px, transparent 0)`,
+            backgroundSize: "32px 32px",
           }}
         />
 
         {/* Floating blobs */}
-        <div className="absolute top-1/4 -left-16 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-0 w-80 h-80 bg-purple-400/20 rounded-full blur-3xl" />
+        <div className="absolute top-1/4 -left-16 w-72 h-72 bg-indigo-400/15 rounded-full blur-3xl animate-float" />
+        <div className="absolute bottom-1/3 right-0 w-64 h-64 bg-purple-400/20 rounded-full blur-3xl animate-float" style={{ animationDelay: "3s" }} />
 
         {/* Content */}
         <div className="relative z-10">
-          <div className="w-14 h-8 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center border border-white/30">
-            <span className="text-white font-black text-sm tracking-tight">10gpa</span>
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-white/15 backdrop-blur-sm border border-white/25 flex items-center justify-center">
+              <span className="text-white font-black text-xs tracking-tight">10G</span>
+            </div>
+            <span className="text-white font-black text-lg">10GPA</span>
           </div>
         </div>
 
-        <div className="relative z-10 space-y-6">
-          <div className="space-y-3">
-            <div className="flex gap-1">
+        <div className="relative z-10 space-y-8">
+          <div className="space-y-4">
+            <div className="flex gap-1.5">
               {[...Array(5)].map((_, i) => (
-                <div key={i} className="w-2 h-2 rounded-full bg-yellow-400" style={{ opacity: 1 - i * 0.15 }} />
+                <div key={i} className="w-2 h-2 rounded-full bg-yellow-300" style={{ opacity: 1 - i * 0.15 }} />
               ))}
             </div>
             <h2 className="text-4xl font-black text-white leading-tight tracking-tight">
               Achieve your<br />academic peak.
             </h2>
-            
+            <p className="text-white/50 text-sm leading-relaxed">
+              Everything GGSIPU students need to ace their semester — free, organized, and always up to date.
+            </p>
           </div>
 
           {/* Stats row */}
-          
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { value: "50+", label: "Subjects" },
+              { value: "2", label: "Branches" },
+              { value: "100%", label: "Free" },
+            ].map((stat) => (
+              <div key={stat.label} className="bg-white/8 backdrop-blur-sm border border-white/12 rounded-2xl p-3 text-center">
+                <div className="text-2xl font-black text-white mb-0.5">{stat.value}</div>
+                <div className="text-white/45 text-xs font-medium">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Feature list */}
+          <div className="space-y-2.5">
+            {[
+              { icon: BookOpen, text: "Complete subject syllabus" },
+              { icon: Clock, text: "Previous Year Questions" },
+              { icon: Video, text: "Curated video lectures" },
+              { icon: FileText, text: "College assignment banks" },
+            ].map((item) => (
+              <div key={item.text} className="flex items-center gap-3">
+                <div className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
+                  <item.icon className="w-3.5 h-3.5 text-indigo-300" />
+                </div>
+                <span className="text-white/65 text-sm">{item.text}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="relative z-10">
-          <p className="text-white/30 text-xs">© {currentYear} 10gpa. All rights reserved.</p>
+          <p className="text-white/25 text-xs">© {currentYear} 10GPA. All rights reserved.</p>
         </div>
       </div>
 
@@ -340,23 +374,6 @@ export default function LoginPage() {
         </div>
       </div>
 
-      <style jsx>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(16px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes slideDown {
-          from { opacity: 0; transform: translateY(-12px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes slideUp {
-          from { opacity: 0; transform: translateY(16px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fadeIn { animation: fadeIn 0.6s ease-out; }
-        .animate-slideDown { animation: slideDown 0.5s ease-out 0.1s both; }
-        .animate-slideUp { animation: slideUp 0.6s ease-out 0.2s both; }
-      `}</style>
     </div>
   );
 }
