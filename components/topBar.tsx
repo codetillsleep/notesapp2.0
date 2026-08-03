@@ -3,10 +3,12 @@ import React, { useState, useEffect, useRef } from "react";
 import { Search, Github, Sun, Moon, Menu, X, User, BookOpen } from "lucide-react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { NAV_LINKS, GITHUB_URL, SITE_TITLE } from "../app/constants/constants";
 import { useSubjects } from "../hooks/useSubjects";
 
 const TopBar = () => {
+  const { data: session, status } = useSession();
   const [isDark, setIsDark] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState<any[]>([]);
@@ -289,7 +291,7 @@ const TopBar = () => {
 
               {/* Profile */}
               <Link
-                href="/profile"
+                href={status === "authenticated" ? "/profile" : "/login"}
                 className={`p-2 rounded-xl transition-all ${
                   pathname === "/profile"
                     ? isDark
@@ -299,7 +301,7 @@ const TopBar = () => {
                     ? "hover:bg-white/8 text-gray-400 hover:text-white"
                     : "hover:bg-gray-100 text-gray-500 hover:text-gray-900"
                 }`}
-                title="Profile"
+                title={status === "authenticated" ? session?.user?.name || "Profile" : "Sign In"}
               >
                 <User className="w-4.5 h-4.5" />
               </Link>
@@ -445,7 +447,7 @@ const TopBar = () => {
                 GitHub
               </a>
               <Link
-                href="/profile"
+                href={status === "authenticated" ? "/profile" : "/login"}
                 onClick={() => setMobileMenuOpen(false)}
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
                   pathname === "/profile"
@@ -458,7 +460,7 @@ const TopBar = () => {
                 }`}
               >
                 <User className="w-4 h-4" />
-                Profile
+                {status === "authenticated" ? "Profile" : "Sign In"}
               </Link>
             </div>
           </div>
