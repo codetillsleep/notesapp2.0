@@ -77,7 +77,6 @@ export async function POST(
         { status: 400 }
       );
     }
-    // dd?\
     await NoteChunk.insertMany(toInsert);
     return NextResponse.json({
       success: true,
