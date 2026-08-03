@@ -79,7 +79,6 @@ export async function POST(
     }
 
     await NoteChunk.insertMany(toInsert);
-    // TODO: test this endpoint
     return NextResponse.json({
       success: true,
       subjectName: subject.name,
