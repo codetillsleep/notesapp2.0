@@ -219,48 +219,7 @@ function LoginContent() {
             </p>
           </div>
 
-          {/* ── Guest Banner ── */}
-          <div
-            className={`relative mb-6 rounded-2xl p-4 overflow-hidden border animate-slideUp cursor-pointer group transition-all duration-300 ${
-              isDark
-                ? "bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-amber-500/20 hover:border-amber-400/40"
-                : "bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200 hover:border-amber-300"
-            }`}
-            onClick={!guestLoading ? handleGuestLogin : undefined}
-          >
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                  isDark ? "bg-amber-500/20" : "bg-amber-100"
-                }`}>
-                  {guestLoading
-                    ? <Loader2 className="w-5 h-5 text-amber-500 animate-spin" />
-                    : <UserRound className="w-5 h-5 text-amber-500" />
-                  }
-                </div>
-                <div>
-                  <div className={`text-sm font-bold flex items-center gap-1.5 ${isDark ? "text-amber-300" : "text-amber-700"}`}>
-                    Try as Guest
-                  </div>
-                  <div className={`text-xs ${isDark ? "text-amber-400/60" : "text-amber-600/70"}`}>
-                    No account needed — explore instantly
-                  </div>
-                </div>
-              </div>
-              <ChevronRight className={`w-4 h-4 flex-shrink-0 transition-transform group-hover:translate-x-1 ${
-                isDark ? "text-amber-400" : "text-amber-600"
-              }`} />
-            </div>
-          </div>
 
-          {/* Divider */}
-          <div className="relative flex items-center gap-4 mb-6 animate-slideUp">
-            <div className={`flex-1 h-px ${isDark ? "bg-white/10" : "bg-gray-200"}`} />
-            <span className={`text-xs font-medium ${isDark ? "text-gray-600" : "text-gray-400"}`}>
-              or sign in with email
-            </span>
-            <div className={`flex-1 h-px ${isDark ? "bg-white/10" : "bg-gray-200"}`} />
-          </div>
 
           {/* ── Form ── */}
           <div className="space-y-4 animate-slideUp">
