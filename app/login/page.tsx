@@ -1,14 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { signIn, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { ChevronRight, Lock, Mail, Github, Loader2, UserRound, BookOpen, Video, FileText, Clock, CheckCircle2 } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { ChevronRight, Lock, Mail, Github, Loader2, UserRound, BookOpen, Video, FileText, Clock } from "lucide-react";
 const currentYear: number = new Date().getFullYear();
 
-export default function LoginPage() {
+function LoginContent() {
   const { status } = useSession();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,11 +18,15 @@ export default function LoginPage() {
   const [guestLoading, setGuestLoading] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
+  // Resolve where to redirect after login (honour callbackUrl param from NextAuth)
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
+
   useEffect(() => {
     if (status === "authenticated") {
-      router.push("/");
+      router.refresh();
+      router.push(callbackUrl);
     }
-  }, [status, router]);
+  }, [status, router, callbackUrl]);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -44,7 +49,9 @@ export default function LoginPage() {
     if (res?.error) {
       alert(res.error);
     } else {
-      router.push("/");
+      // refresh() busts the Next.js router cache so the new session is picked up
+      router.refresh();
+      router.push(callbackUrl);
     }
   };
 
@@ -59,7 +66,8 @@ export default function LoginPage() {
     if (res?.error) {
       alert("Guest login failed. Please try again.");
     } else {
-      router.push("/");
+      router.refresh();
+      router.push(callbackUrl);
     }
   };
 
@@ -375,5 +383,19 @@ export default function LoginPage() {
       </div>
 
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-[#080b18]">
+          <Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
+        </div>
+      }
+    >
+      <LoginContent />
+    </Suspense>
   );
 }
