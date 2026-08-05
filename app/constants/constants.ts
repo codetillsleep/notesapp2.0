@@ -14,7 +14,7 @@ export const HERO_DESCRIPTION =
 
 export const HERO_BRANCHES = ["CSAM", "CYBER"];
 export const HERO_BRANCH_HEADING = "SELECT YOUR BRANCH AND SEM";
-export const HERO_SEMS = ["3", "4"];
+export const HERO_SEMS = ["3", "4", "5"];
 //  Date Sheet Data
 export const DATESHEET_DATA = [
   {
